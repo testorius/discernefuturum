@@ -2,7 +2,6 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
-
 import cloudflare from '@astrojs/cloudflare';
 
 /** @type {import('astro').AstroUserConfig} */
@@ -23,6 +22,10 @@ export default defineConfig({
 
   // Add output configuration
   output: 'server',
+  adapter: cloudflare({
+    mode: 'directory',
+    functionPerRoute: true
+  }),
 
   // Add compress option for production builds
   compressHTML: true,
@@ -57,7 +60,5 @@ export default defineConfig({
     optimizeDeps: {
       exclude: ['@astrojs/react']
     }
-  },
-
-  adapter: cloudflare()
+  }
 });
