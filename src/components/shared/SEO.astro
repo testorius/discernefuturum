@@ -1,0 +1,204 @@
+---
+// src/components/shared/SEO.astro
+
+interface OpenGraphImage {
+  url: string;
+  width?: number;
+  height?: number;
+  alt?: string;
+  type?: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  siteName?: string;
+  image?: string | OpenGraphImage;
+  canonicalURL?: string | URL;
+  noindex?: boolean;
+  article?: boolean;
+  publishedTime?: string;
+  modifiedTime?: string;
+  authors?: string[];
+  section?: string;
+  og?: {
+    title?: string;
+    description?: string;
+    image?: string | OpenGraphImage;
+    type?: 'website' | 'article' | 'profile';
+    locale?: string;
+    siteName?: string;
+  };
+  twitter?: {
+    card?: 'summary' | 'summary_large_image' | 'app' | 'player';
+    title?: string;
+    description?: string;
+    image?: string | OpenGraphImage;
+    creator?: string;
+    site?: string;
+  };
+  alternates?: {
+    canonical?: string;
+    languages?: Record<string, string>;
+    media?: Record<string, string>;
+    types?: Record<string, string>;
+  };
+  jsonLd?: Record<string, any>;
+}
+
+const {
+  title,
+  siteName,
+  description,
+  image,
+  canonicalURL = Astro.url.pathname,
+  noindex = false,
+  article = false,
+  publishedTime,
+  modifiedTime,
+  authors,
+  section,
+  og,
+  twitter,
+  alternates,
+  jsonLd
+} = Astro.props;
+
+// Construct full title
+const fullTitle = siteName ? `${title} | ${siteName}` : title;
+
+// Ensure canonical URL is absolute
+const canonicalUrl = new URL(canonicalURL, Astro.site).toString().replace(/\/$/, '');
+
+// Handle image objects or strings
+const getImageMeta = (img: string | OpenGraphImage | undefined): OpenGraphImage | undefined => {
+  if (!img) return undefined;
+  if (typeof img === 'string') {
+    return {
+      url: new URL(img, Astro.site).toString(),
+      alt: title,
+      type: img.endsWith('.svg') ? 'image/svg+xml' : 
+            img.endsWith('.png') ? 'image/png' : 
+            'image/jpeg'
+    };
+  }
+  return {
+    ...img,
+    url: new URL(img.url, Astro.site).toString()
+  };
+};
+
+const ogImage = getImageMeta(og?.image || image);
+const twitterImage = getImageMeta(twitter?.image || ogImage);
+
+// Base schema
+const baseSchema = {
+  "@context": "https://schema.org",
+  "@type": article ? "Article" : "WebPage",
+  "@id": canonicalUrl,
+  "url": canonicalUrl,
+  "name": title,
+  "description": description,
+  "inLanguage": "de-CH",
+  "isAccessibleForFree": true,
+  "image": ogImage?.url
+};
+
+// Merge with provided JSON-LD if any
+const structuredData = jsonLd ? { ...baseSchema, ...jsonLd } : baseSchema;
+
+// Add article specific properties if needed
+if (article && publishedTime) {
+  structuredData.datePublished = publishedTime;
+  if (modifiedTime) structuredData.dateModified = modifiedTime;
+  if (authors) structuredData.author = authors.map(author => ({ "@type": "Person", "name": author }));
+  if (section) structuredData.articleSection = section;
+}
+---
+
+<!-- Security and Resource Hints -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<!-- Primary Meta Tags -->
+<title>{fullTitle}</title>
+<meta name="title" content={fullTitle} />
+<meta name="description" content={description} />
+<meta name="author" content={siteName} />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Language -->
+<meta property="og:locale" content={og?.locale || "de_CH"} />
+<meta name="language" content="German" />
+
+<!-- Control robots -->
+{noindex ? (
+  <meta name="robots" content="noindex, nofollow" />
+) : (
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+)}
+
+<!-- Canonical and Alternate URLs -->
+<link rel="canonical" href={canonicalUrl} />
+{alternates?.languages && 
+  Object.entries(alternates.languages).map(([lang, url]) => (
+    <link rel="alternate" hreflang={lang} href={new URL(url, Astro.site).toString()} />
+  ))
+}
+{alternates?.media &&
+  Object.entries(alternates.media).map(([media, url]) => (
+    <link rel="alternate" media={media} href={new URL(url, Astro.site).toString()} />
+  ))
+}
+
+<!-- Open Graph -->
+{siteName && <meta property="og:site_name" content={siteName} />}
+<meta property="og:title" content={og?.title || fullTitle} />
+<meta property="og:description" content={og?.description || description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:type" content={og?.type || (article ? 'article' : 'website')} />
+
+{ogImage && (
+  <>
+    <meta property="og:image" content={ogImage.url} />
+    {ogImage.width && <meta property="og:image:width" content={ogImage.width.toString()} />}
+    {ogImage.height && <meta property="og:image:height" content={ogImage.height.toString()} />}
+    {ogImage.alt && <meta property="og:image:alt" content={ogImage.alt} />}
+    {ogImage.type && <meta property="og:image:type" content={ogImage.type} />}
+  </>
+)}
+
+<!-- Article Specific -->
+{article && publishedTime && (
+  <meta property="article:published_time" content={publishedTime} />
+)}
+{article && modifiedTime && (
+  <meta property="article:modified_time" content={modifiedTime} />
+)}
+{article && section && (
+  <meta property="article:section" content={section} />
+)}
+{article && authors?.map((author) => (
+  <meta property="article:author" content={author} />
+))}
+
+<!-- Twitter -->
+<meta name="twitter:card" content={twitter?.card || "summary_large_image"} />
+<meta name="twitter:title" content={twitter?.title || og?.title || fullTitle} />
+<meta name="twitter:description" content={twitter?.description || og?.description || description} />
+{twitterImage && (
+  <>
+    <meta name="twitter:image" content={twitterImage.url} />
+    {twitterImage.alt && <meta name="twitter:image:alt" content={twitterImage.alt} />}
+  </>
+)}
+{twitter?.creator && (
+  <meta name="twitter:creator" content={twitter.creator} />
+)}
+{twitter?.site && (
+  <meta name="twitter:site" content={twitter.site} />
+)}
+
+<!-- Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

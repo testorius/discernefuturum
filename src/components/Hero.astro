@@ -1,0 +1,109 @@
+---
+interface Props {
+  uptitle: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  valueProps: string[];
+}
+
+const {
+  uptitle = "Growth Consultant aus Zürich",
+  title = "Building Digital Products That Matter",
+  subtitle = "Helping companies transform their ideas into successful digital products through strategic consulting and technical leadership.",
+  image = "images/alexanderpaul.jpg",
+  valueProps = [
+    "16 Jahre SEO- & SEA Erfahrung",
+    "...",
+    "...",
+    "...",
+    "...",
+    "..."
+  ]
+} = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-white py-20 sm:py-24 lg:py-28">
+  <!-- Center content container -->
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <!-- Header text center aligned -->
+    <div class="text-center mb-16">
+      <p class="text-base uppercase tracking-wide text-lime-600 lg:text-2xl mb-3">
+        {uptitle}
+      </p>
+      <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl mb-4">
+        {title}
+      </h1>
+      <p class="mx-auto max-w-2xl text-2xl text-gray-600">
+        {subtitle}
+      </p>
+    </div>
+
+    <!-- Two column grid -->
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 items-start">
+      <!-- Left column - Image -->
+      <div class="relative">
+        <div class="aspect-[3/4] lg:aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 h-[400px] lg:h-[450px]">
+          <img
+            src={image}
+            alt="Alexander Paul - Tech Strategy Consultant"
+            class="h-full w-full object-cover object-center"
+            style="object-position: center 20%;" <!-- Adjust this value to control vertical centering -->
+          />
+        </div>
+        <!-- Enhanced decorative elements -->
+        <div class="absolute -top-4 -left-4 -right-4 -bottom-4 -z-10 bg-gradient-to-br from-lime-50 to-transparent rounded-2xl"></div>
+        <div class="absolute -top-2 -left-2 -right-2 -bottom-2 -z-10 bg-gradient-to-tr from-gray-50 to-transparent rounded-2xl"></div>
+      </div>
+
+      <!-- Right column - Value props and CTA -->
+      <div class="flex flex-col justify-start h-full">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">
+        Mein Profil für Ihren Erfolg:
+        </h2>
+        <div class="space-y-6 mb-8">
+          {valueProps.map((prop) => (
+            <div class="flex items-center group">
+              <div class="flex-shrink-0">
+                <svg 
+                  class="h-6 w-6 text-lime-500 transform transition-transform duration-300 ease-out group-hover:scale-110" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke-width="2" 
+                  stroke="currentColor"
+                >
+                  <path 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+                  />
+                </svg>
+              </div>
+              <p class="ml-3 text-xl text-gray-700 group-hover:text-gray-900 transition-colors duration-200">
+                {prop}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Enhanced CTA Buttons -->
+        <div class="text-center lg:text-left mt-4 flex flex-col items-center lg:items-start space-y-4">
+          <a
+            href="https://calendly.com/hi-alexpaul/30min"
+            class="group relative inline-flex items-center justify-center w-full max-w-md rounded-xl bg-gradient-to-r from-lime-600 to-lime-500 px-12 py-5 text-2xl font-display font-semibold text-white shadow-lg hover:from-lime-500 hover:to-lime-400 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-2 transition-all duration-300 ease-out hover:shadow-lime-200/50 hover:shadow-xl"
+          >
+            ☕ 30 Minuten Kaffee mit mir
+          </a>
+          
+          <!-- Outline Button for LinkedIn -->
+            <a
+            href="https://linkedin.com/in/1xp"
+            class="group inline-flex items-center justify-center w-full max-w-md px-12 py-4 border-2 border-blue-500 text-blue-500 rounded-lg text-xl font-display font-semibold hover:bg-blue-500 hover:text-white transition-colors duration-200 ease-out"
+            >
+            Auf LinkedIn verbinden
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

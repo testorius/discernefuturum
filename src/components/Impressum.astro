@@ -1,0 +1,96 @@
+---
+import ProtectedEmail from './shared/ProtectedEmail';
+interface Props {
+  uptitle?: string;
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  uptitle = "Rechtliche Informationen",
+  title = "Impressum",
+  subtitle = "Angaben gemäß § 5 TMG",
+} = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-white py-20 sm:py-24 lg:py-28">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <!-- Header text center aligned -->
+    <div class="text-center mb-16">
+      <p class="text-base uppercase tracking-wide text-lime-600 lg:text-2xl mb-3">
+        {uptitle}
+      </p>
+      <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl mb-4">
+        {title}
+      </h1>
+      <p class="mx-auto max-w-2xl text-2xl text-gray-600">
+        {subtitle}
+      </p>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
+    <!-- Left column - Contact Information -->
+    <div class="lg:col-span-1">
+        <div class="bg-gray-50 rounded-2xl p-8 relative">
+        <div class="absolute -top-4 -left-4 -right-4 -bottom-4 -z-10 bg-gradient-to-br from-lime-50 to-transparent rounded-2xl"></div>
+        
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">
+            Kontakt
+        </h2>
+        
+        <div class="space-y-4">
+            <div>
+            <h3 class="text-lg font-semibold text-gray-700">Alexander Paul</h3>
+            <p class="text-gray-600">Freelance Growth Consultant</p>
+            </div>
+            
+            <div>
+            <p class="text-gray-600">Thurgauerstrasse 152</p>
+            <p class="text-gray-600">8152 Glattpark (Opfikon), ZH</p>
+            <p class="text-gray-600">Schweiz</p>
+            </div>
+            
+            <div>
+            <ProtectedEmail client:load />
+            <p class="text-gray-600">-Handelsregistereintrag in Kürze</p>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!-- Right column - Legal Text -->
+    <div class="lg:col-span-2 prose prose-lg max-w-none">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">
+        Haftungsausschluss
+        </h2>
+        
+        <div class="space-y-8">
+        <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Haftung für Inhalte</h3>
+            <p class="text-lg text-gray-600 leading-relaxed">
+            Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.
+            </p>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Haftung für Links</h3>
+            <p class="text-lg text-gray-600 leading-relaxed">
+            Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen.
+            </p>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Urheberrecht</h3>
+            <p class="text-lg text-gray-600 leading-relaxed">
+            Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem schweizerischen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
+            </p>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Datenschutz</h3>
+            <p class="text-lg text-gray-600 leading-relaxed">
+            Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene Daten (beispielsweise Name, Anschrift oder E-Mail-Adressen) erhoben werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis.
+            </p>
+        </div>
+        </div>
+    </div>
+    </div>
+    </div>
+</section>

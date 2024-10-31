@@ -1,0 +1,45 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="w-full bg-white/80 backdrop-blur-md border-t border-gray-100">
+  <div class="absolute inset-0 bg-gradient-to-r from-lime-50/50 via-transparent to-lime-50/50 opacity-50"></div>
+  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="py-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+      <div class="flex items-center space-x-2">
+        <img 
+          src="/images/alexanderpaullogo.svg" 
+          alt="Alexander Paul Logo" 
+          class="h-8 w-auto"
+        />
+        <a href="/" class="text-sm sm:text-base text-gray-600 hover:text-gray-900 transition-colors duration-200">
+          © {currentYear} Alexander Paul
+        </a>
+      </div>
+
+      <div class="flex items-center space-x-6">
+        <a 
+          href="/impressum" 
+          class="text-sm sm:text-base text-gray-600 hover:text-lime-600 transition-colors duration-200"
+        >
+          Impressum
+        </a>
+        <a 
+          href="https://www.linkedin.com/in/1xp/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="text-sm sm:text-base text-gray-600 hover:text-lime-600 transition-colors duration-200"
+        >
+          LinkedIn
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    position: relative;
+    overflow: hidden;
+  }
+</style>
