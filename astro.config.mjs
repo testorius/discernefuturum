@@ -22,7 +22,7 @@ export default defineConfig({
   },
 
   // Add output configuration
-  output: 'hybrid',
+  output: 'server',
 
   // Add compress option for production builds
   compressHTML: true,
