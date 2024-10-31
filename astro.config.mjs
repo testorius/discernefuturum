@@ -19,7 +19,7 @@ export default defineConfig({
       },
       changefreq: 'weekly',
       priority: 1.0,
-      lastmod: new Date().toISOString(),
+      lastmod: new Date(),
     }),
   ],
 
