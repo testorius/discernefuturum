@@ -48,7 +48,14 @@ const {
             src={image}
             alt="Alexander Paul - Tech Strategy Consultant"
             class="h-full w-full object-cover object-center"
-            style="object-position: center 20%;" 
+            style="object-position: center 30%"
+            loading="lazy"
+            decoding="async"
+            width="800"
+            height="1067"
+            fetchpriority="high"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            onload="this.classList.add('loaded')"
           />
         </div>
         <!-- Enhanced decorative elements -->
