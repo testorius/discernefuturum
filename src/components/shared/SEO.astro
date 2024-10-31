@@ -98,7 +98,6 @@ interface StructuredData {
   url: string;
   name: string;
   description: string;
-  inLanguage: string;
   isAccessibleForFree: boolean;
   image?: string;
   datePublished?: string;
@@ -116,7 +115,6 @@ const baseSchema: StructuredData = {
   "url": canonicalUrl,
   "name": title,
   "description": description,
-  "inLanguage": "de-CH",
   "isAccessibleForFree": true,
   "image": ogImage?.url
 };
