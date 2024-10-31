@@ -12,7 +12,7 @@ interface OpenGraphImage {
 interface Props {
   title: string;
   description: string;
-  siteName?: string;
+  siteName?: string;  // This was missing from Props but used in the component
   image?: string | OpenGraphImage;
   canonicalURL?: string | URL;
   noindex?: boolean;
@@ -91,8 +91,25 @@ const getImageMeta = (img: string | OpenGraphImage | undefined): OpenGraphImage 
 const ogImage = getImageMeta(og?.image || image);
 const twitterImage = getImageMeta(twitter?.image || ogImage);
 
+interface StructuredData {
+  "@context": string;
+  "@type": string;
+  "@id": string;
+  url: string;
+  name: string;
+  description: string;
+  inLanguage: string;
+  isAccessibleForFree: boolean;
+  image?: string;
+  datePublished?: string;
+  dateModified?: string;
+  author?: Array<{ "@type": string; name: string; }>;
+  articleSection?: string;
+  [key: string]: any; // Allow additional properties
+}
+
 // Base schema
-const baseSchema = {
+const baseSchema: StructuredData = {
   "@context": "https://schema.org",
   "@type": article ? "Article" : "WebPage",
   "@id": canonicalUrl,
@@ -105,7 +122,7 @@ const baseSchema = {
 };
 
 // Merge with provided JSON-LD if any
-const structuredData = jsonLd ? { ...baseSchema, ...jsonLd } : baseSchema;
+const structuredData: StructuredData = jsonLd ? { ...baseSchema, ...jsonLd } : baseSchema;
 
 // Add article specific properties if needed
 if (article && publishedTime) {
@@ -201,4 +218,4 @@ if (article && publishedTime) {
 )}
 
 <!-- Structured Data -->
-<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />

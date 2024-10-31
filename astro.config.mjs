@@ -22,10 +22,7 @@ export default defineConfig({
 
   // Add output configuration
   output: 'server',
-  adapter: cloudflare({
-    mode: 'directory',
-    functionPerRoute: true
-  }),
+  adapter: cloudflare(),
 
   // Add compress option for production builds
   compressHTML: true,
@@ -60,5 +57,4 @@ export default defineConfig({
     optimizeDeps: {
       exclude: ['@astrojs/react']
     }
-  }
-});
+  }});
