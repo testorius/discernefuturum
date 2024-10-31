@@ -3,15 +3,24 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
 import cloudflare from '@astrojs/cloudflare';
+import sitemap from '@astrojs/sitemap';
 
 /** @type {import('astro').AstroUserConfig} */
 export default defineConfig({
-  // Add React to your existing integrations
+  // Add React and other integrations
   integrations: [
     tailwind(),
-    react()
+    react(),
+    sitemap({
+      filter: (page) => {
+        const excludedPages = ['/impressum', '/impressum/'];
+        return !excludedPages.includes(new URL(page).pathname);
+      },
+      changefreq: 'weekly',
+      priority: 1.0,
+      lastmod: new Date().toISOString()
+    }),
   ],
-
   // Improve build output
   build: {
     // Enhance assets handling
@@ -19,23 +28,18 @@ export default defineConfig({
     // Improve CSS bundling
     inlineStylesheets: 'auto'
   },
-
   // Add output configuration
   output: 'server',
   adapter: cloudflare(),
-
   // Add compress option for production builds
   compressHTML: true,
-
-  // Add site configuration (replace with your actual URL in production)
+  // Add site configuration
   site: 'https://alexanderpaul.ch',
-
   // Add server configuration for development
   server: {
     port: 3000,
     host: true
   },
-
   // Add vite configuration for better performance
   vite: {
     build: {
@@ -57,4 +61,5 @@ export default defineConfig({
     optimizeDeps: {
       exclude: ['@astrojs/react']
     }
-  }});
+  }
+});

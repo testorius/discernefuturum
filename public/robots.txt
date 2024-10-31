@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
 Sitemap: https://alexanderpaul.ch/sitemap-index.xml
+Disallow: /impressum/
