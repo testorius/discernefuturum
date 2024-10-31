@@ -1,4 +1,5 @@
 // @ts-check
+
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
@@ -18,28 +19,34 @@ export default defineConfig({
       },
       changefreq: 'weekly',
       priority: 1.0,
-      lastmod: new Date().toISOString()
+      lastmod: new Date().toISOString(),
     }),
   ],
+
   // Improve build output
   build: {
     // Enhance assets handling
     assets: 'assets',
     // Improve CSS bundling
-    inlineStylesheets: 'auto'
+    inlineStylesheets: 'auto',
   },
+
   // Add output configuration
   output: 'server',
   adapter: cloudflare(),
+
   // Add compress option for production builds
   compressHTML: true,
+
   // Add site configuration
   site: 'https://alexanderpaul.ch',
+
   // Add server configuration for development
   server: {
     port: 3000,
-    host: true
+    host: true,
   },
+
   // Add vite configuration for better performance
   vite: {
     build: {
@@ -51,15 +58,15 @@ export default defineConfig({
       terserOptions: {
         compress: {
           drop_console: true,
-          drop_debugger: true
-        }
-      }
+          drop_debugger: true,
+        },
+      },
     },
     // Add cache busting for assets
     assetsInclude: ['**/*.svg', '**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif'],
     // Optimize deps
     optimizeDeps: {
-      exclude: ['@astrojs/react']
-    }
-  }
+      exclude: ['@astrojs/react'],
+    },
+  },
 });
