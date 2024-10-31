@@ -22,7 +22,7 @@ export default defineConfig({
   },
 
   // Add output configuration
-  output: 'static',
+  output: 'hybrid',
 
   // Add compress option for production builds
   compressHTML: true,
