@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import ServicesGrid from '../components/ServicesGrid.astro';
+import ChatInterface from '../components/ChatInterface';
 
 const seoDescription = "Ich unterstütze Agenturen und Unternehmen beim Erreichen ihrer Wachstumsziele. Freelancer für SEO, Paid Ads, Digital Analytics und KI-Automatisierung.";
 const seoTitle = "SEO Freelancer & Growth Consultant aus Zürich";
@@ -161,7 +162,7 @@ const canonicalURL = new URL('/', Astro.site).toString();
       "@type": "InteractAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": "https://calendly.com/hi-alexpaul/30min",
+        "urlTemplate": "https://app.reclaim.ai/m/alexanderpaul/coffee",
         "actionPlatform": [
           "http://schema.org/DesktopWebPlatform",
           "http://schema.org/MobileWebPlatform"
@@ -189,4 +190,5 @@ const canonicalURL = new URL('/', Astro.site).toString();
     ]}
   />
   <ServicesGrid />
+  <ChatInterface client:load />
 </Layout>
