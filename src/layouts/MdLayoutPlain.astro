@@ -1,0 +1,78 @@
+---
+import type { SEOProps } from '../seo/types';
+import SEO from '../components/shared/SEO.astro';
+import Navigation from '../components/shared/Navigation.astro';
+import Footer from '../components/shared/Footer.astro'; // Footer hinzugefügt
+
+// Extend SEOProps to include required layout props
+interface Props extends Omit<SEOProps, 'title' | 'description'> {
+  title: string;  // Title is required
+  description?: string;  // Optional with default
+}
+
+const { 
+  title, 
+  description = "", // Beschreibung optional
+  ...seoProps
+} = Astro.props;
+
+const fontFamilies = [
+  'Inter:wght@400;700', // Hochwertige Lesefreundliche Schrift
+  'Merriweather:wght@400;700'
+].join('&family=');
+
+const googleFontsUrl = `https://fonts.googleapis.com/css2?family=${fontFamilies}&display=swap`;
+---
+
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content={Astro.generator}>
+
+  <SEO 
+    title={title} 
+    description={description}
+    {...seoProps}
+  />
+
+  <!-- Optimized Google Fonts loading -->
+  <link 
+    href={googleFontsUrl}
+    rel="stylesheet"
+    media="print"
+    data-media="all"
+    onload="this.media=this.dataset.media;this.removeAttribute('data-media');"
+  >
+  <noscript>
+    <link href={googleFontsUrl} rel="stylesheet">
+  </noscript>
+
+  <!-- Favicon Support -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+</head>
+<body class="bg-gray-100 text-gray-900 flex flex-col min-h-screen">
+  <Navigation /> <!-- Navigation hinzugefügt -->
+
+  <header class="bg-white shadow-md py-6">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-3xl font-bold text-gray-900">{title}</h1>
+      {description && <p class="text-lg text-gray-600 mt-2">{description}</p>}
+    </div>
+  </header>
+
+  <main class="prose prose-lg prose-gray mx-auto px-4 py-10 max-w-5xl flex-grow"> <!-- max-w-3xl auf max-w-5xl geändert -->
+    <slot />
+  </main>
+
+  <Footer /> <!-- Footer korrekt eingebunden -->
+</body>
+</html>
