@@ -3,13 +3,50 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import ServicesGrid from '../components/ServicesGrid.astro';
 import ChatInterface from '../components/ChatInterface';
-import { getEntry } from 'astro:content';
 
-const homepage = await getEntry('homepage', 'content');
-const { hero, seo, services } = homepage.data;
+const seoDescription = "Ich unterstütze Agenturen und Unternehmen beim Erreichen ihrer Wachstumsziele. Freelancer für SEO, Paid Ads, Digital Analytics und KI-Automatisierung.";
+const seoTitle = "SEO Freelancer & Growth Consultant aus Zürich";
+const siteName = "Alexander Paul";
 
-// Construct canonical URL for homepage
-const canonicalURL = new URL('/', Astro.site).toString();
+// Define services for reuse in schema
+const services = [
+  {
+    "@type": "Service",
+    "name": "AI-Ready SEO",
+    "description": "Technische und semantische Suchmaschinenoptimierung mit KI-Integration für Content Projekte. Expertise in der Vorbereitung auf die neue KI-Ära mit Integration statt Abwehr von neuen Technologien.",
+    "category": "SEO Services"
+  },
+  {
+    "@type": "Service",
+    "name": "Lead Generierung & CRO",
+    "description": "Zielgruppenidentifikation, Landing Page Optimierung, Kampagnenmanagement und Conversion Rate Optimization mit integriertem Analytics-Setup.",
+    "category": "Digital Marketing"
+  },
+  {
+    "@type": "Service",
+    "name": "Growth Strategie",
+    "description": "Entwicklung maßgeschneiderter Growth-Strategien mit Marktanalyse, Kanalidentifikation und datengetriebener Optimierung.",
+    "category": "Business Consulting"
+  },
+  {
+    "@type": "Service",
+    "name": "Digital Analytics",
+    "description": "Implementierung und Optimierung von Tracking-Setups, Erstellung von Measurement Plänen und Dashboards. Expertise mit Google Analytics, Tag Manager, PostHog und Looker.",
+    "category": "Analytics Services"
+  },
+  {
+    "@type": "Service",
+    "name": "Bezahlte Werbung",
+    "description": "Setup und Optimierung von Werbekampagnen auf Google Ads, Meta, LinkedIn und Microsoft Advertising, inklusive Automatisierung durch Ads Scripts.",
+    "category": "Paid Advertising"
+  },
+  {
+    "@type": "Service",
+    "name": "KI-Prozessautomatisierung",
+    "description": "Implementierung von KI-gestützten Automatisierungen und Workflows für Unternehmensprozesse, inklusive eigener KI-Entwicklungen wie Google Sheets Erweiterungen.",
+    "category": "AI Services"
+  }
+];
 
 // Enhanced image configuration
 const mainImage = {
@@ -19,25 +56,28 @@ const mainImage = {
   alt: "Alexander Paul - SEO Freelancer & Growth Consultant",
   type: "image/webp"
 };
+
+// Construct canonical URL for homepage
+const canonicalURL = new URL('/', Astro.site).toString();
 ---
 <Layout 
-  title={seo.title}
-  description={seo.description}
-  siteName={seo.siteName}
+  title={seoTitle}
+  description={seoDescription}
+  siteName={siteName}
   image={mainImage}
   canonicalURL={canonicalURL}
   og={{
     title: "Growth & SEO Consultant Zürich | Alexander Paul",
-    description: seo.description,
+    description: seoDescription,
     image: mainImage,
     type: "website",
     locale: "de_CH",
-    siteName: seo.siteName
+    siteName: siteName
   }}
   twitter={{
     card: "summary_large_image",
     title: "Growth & SEO Consultant Zürich | Alexander Paul",
-    description: seo.description,
+    description: seoDescription,
     image: "/images/alexanderpaul.webp",
     creator: "@6c7870" // Add if you have Twitter
   }}
@@ -53,7 +93,7 @@ const mainImage = {
     "@id": "https://alexanderpaul.ch/#business",
     "name": "Alexander Paul - SEO Freelancer & Growth Consultant aus Zürich",
     "image": mainImage.url,
-    "description": seo.description,
+    "description": seoDescription,
     "url": "https://alexanderpaul.ch",
     "telephone": "",
     "email": "hi@alexanderpaul.ch",
@@ -136,12 +176,19 @@ const mainImage = {
   }}
 >
   <Hero
-    uptitle={hero.uptitle}
-    title={hero.title}
-    subtitle={hero.subtitle}
+    uptitle="Freelance Growth Consultant aus Zürich 🇨🇭"
+    title="Geschäftswachstum heute dank digitalem Marketing von morgen."
+    subtitle={seoDescription}
     image="/images/alexanderpaul.webp"
-    valueProps={hero.valueProps}
+    valueProps={[
+      "15+ Jahre Erfahrung im digitalen Marketing",
+      "Diverse Rollen als Spezialist in Digital Analytics, SEO & SEA",
+      "Ehemalige Fachleitung in einem der grössten schweizer Content-Projekte",
+      "Erfahrung als (Ex-) Co-Founder & Chief Marketing Officer (DePay AG)",
+      "Bisherige Budget-Verantwortung im hohen 7-stelligen Bereich",
+      "Solide Programmier- und Automatisierungs-Skills"
+    ]}
   />
-  <ServicesGrid services={services} />
+  <ServicesGrid />
   <ChatInterface client:load />
 </Layout>

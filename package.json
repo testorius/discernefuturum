@@ -1,5 +1,5 @@
 {
-  "name": "alexanderpaulch-new",
+  "name": "your-astro-project",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -7,7 +7,9 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "sync-content": "node scripts/sync-content.js",
+    "sync-content:watch": "nodemon scripts/sync-content.js"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -24,6 +26,12 @@
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.16",
     "terser": "^5.36.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "@google/docs-api": "^1.0.0",
+    "@google/drive-api": "^1.0.0",
+    "sharp": "^0.32.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
 }

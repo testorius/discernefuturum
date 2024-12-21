@@ -69,4 +69,11 @@ export default defineConfig({
       exclude: ['@astrojs/react'],
     },
   },
+
+  // Content collection settings (optional)
+  content: {
+    collections: {
+      // If you need any special collection-level settings
+    }
+  }
 });
