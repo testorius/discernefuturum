@@ -71,13 +71,6 @@ export default defineConfig({
     },
   },
 
-  // Content collection settings (optional)
-  content: {
-    collections: {
-      // If you need any special collection-level settings
-    }
-  },
-
   image: {
     service: {
       entrypoint: 'astro/assets/services/sharp'

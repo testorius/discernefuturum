@@ -5,8 +5,8 @@ import ServicesGrid from '../components/ServicesGrid.astro';
 import ChatInterface from '../components/ChatInterface';
 import { getEntry } from 'astro:content';
 
-const homepage = await getEntry('homepage', 'content');
-const { hero, seo, services } = homepage.data;
+const homepage = await getEntry('home', 'homepage');
+const { hero, seo, services } = homepage?.data || {};
 
 // Construct canonical URL for homepage
 const canonicalURL = new URL('/', Astro.site).toString();
