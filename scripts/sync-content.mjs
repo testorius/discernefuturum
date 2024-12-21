@@ -68,9 +68,9 @@ function parseDocument(document) {
     services: [],
     images: {
       profile: {
-        url: '/images/alexanderpaul.webp',
-        width: 1200,
-        height: 630,
+        filename: '',
+        width: 800,
+        height: 600,
         alt: '',
         type: 'image/webp'
       }
@@ -219,4 +219,17 @@ try {
 } catch (error) {
   console.error('Failed to parse credentials:', error);
   process.exit(1);
+}
+
+function processImageReference(text) {
+  // Instead of extracting Drive IDs, extract filenames
+  // Example: If doc contains "image: profile.webp", it will use that filename
+  const filename = // extract filename from text
+  return {
+    filename,    // Just store the filename
+    width: 800,  // You might want to get these from the actual image
+    height: 600, // You might want to get these from the actual image
+    alt: "...",
+    type: "image/webp"
+  };
 }
