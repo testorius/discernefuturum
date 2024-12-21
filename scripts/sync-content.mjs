@@ -207,3 +207,16 @@ function parseDocument(document) {
 
 // Run the sync
 syncContent().catch(console.error);
+
+// Add this debug logging
+console.log('Checking environment variables:');
+console.log('GOOGLE_DOC_ID exists:', !!process.env.GOOGLE_DOC_ID);
+console.log('GOOGLE_CREDENTIALS exists:', !!process.env.GOOGLE_CREDENTIALS);
+
+try {
+  const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+  console.log('Credentials parsed successfully');
+} catch (error) {
+  console.error('Failed to parse credentials:', error);
+  process.exit(1);
+}
