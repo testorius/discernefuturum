@@ -131,38 +131,33 @@ function parseDocument(document) {
         break;
 
       case 'hero section':
-        if (text.startsWith('Small Title Above: ')) {
+        if (text.startsWith('Key Points:')) {
+          currentSection = 'key_points';
+        } else if (text.startsWith('Small Title Above: ')) {
           parsedContent.hero.uptitle = text.replace('Small Title Above: ', '');
         } else if (text.startsWith('Main Heading: ')) {
           parsedContent.hero.title = text.replace('Main Heading: ', '');
         } else if (text.startsWith('Subheading: ')) {
           parsedContent.hero.subtitle = text.replace('Subheading: ', '');
-        } else if (text.startsWith('• ')) {
+        }
+        break;
+
+      case 'key_points':
+        if (text.startsWith('• ')) {
           parsedContent.hero.valueProps.push(text.replace('• ', ''));
-        } else if (text.startsWith('[button_primary]')) {
-          const match = text.match(/\[button_primary\](.*?)\]\s*→\s*(.*)/);
-          if (match) {
-            parsedContent.hero.cta.primary.text = match[1];
-            parsedContent.hero.cta.primary.link = match[2];
-          }
-        } else if (text.startsWith('[button_secondary]')) {
-          const match = text.match(/\[button_secondary\](.*?)\]\s*→\s*(.*)/);
-          if (match) {
-            parsedContent.hero.cta.secondary.text = match[1];
-            parsedContent.hero.cta.secondary.link = match[2];
-          }
         }
         break;
 
       case 'services':
-        if (text.startsWith('## ')) {
-          const serviceName = text.replace('## ', '');
+        if (text.startsWith('## Service')) {
+          const serviceName = text.replace('## Service ', '')
+                                 .replace(':', ' -');  // Format cleanup
           parsedContent.services.push({
             name: serviceName,
             description: '',
             category: '',
             icon: {
-              url: '',
+              url: `/images/icons/${serviceName.toLowerCase().replace(/\s+/g, '-')}.svg`,
               alt: serviceName
             }
           });
@@ -172,20 +167,12 @@ function parseDocument(document) {
         } else if (text.startsWith('Description: ') && parsedContent.services.length > 0) {
           parsedContent.services[parsedContent.services.length - 1].description = 
             text.replace('Description: ', '');
-        } else if (text.startsWith('Icon: ') && parsedContent.services.length > 0) {
-          const iconMatch = text.match(/Icon:\s*{{\'(.*?)\'}}/)
-          if (iconMatch) {
-            const service = parsedContent.services[parsedContent.services.length - 1];
-            service.icon.alt = iconMatch[1];
-            service.icon.url = `/images/icons/${service.name.toLowerCase().replace(/\s+/g, '-')}.svg`;
-          }
         }
         break;
 
       case 'profile image':
-        const imageMatch = text.match(/{{\'(.+?)\'}}/)
-        if (imageMatch) {
-          parsedContent.images.profile.alt = imageMatch[1];
+        if (text.startsWith('Alt Text: ')) {
+          parsedContent.images.profile.alt = text.replace('Alt Text: ', '');
         }
         break;
 

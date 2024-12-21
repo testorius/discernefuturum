@@ -1,17 +1,22 @@
-name: Sync Content
+name: Deploy to GitHub Pages
+
 on:
-  workflow_dispatch:  # Allows manual trigger
-  schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  sync:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@v3
-      
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -25,11 +30,17 @@ jobs:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
           GOOGLE_DOC_ID: ${{ secrets.GOOGLE_DOC_ID }}
         run: node scripts/sync-content.mjs
-        
-      - name: Commit changes
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add src/content/homepage.json
-          git commit -m "Update content from Google Docs" || exit 0
-          git push
+
+      - name: Install, build, and upload site
+        uses: withastro/action@v1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1

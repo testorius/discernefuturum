@@ -39,7 +39,8 @@ export default defineConfig({
   compressHTML: true,
 
   // Add site configuration
-  site: 'https://alexanderpaul.ch',
+  site: 'https://testorius.github.io',
+  base: '/discernefuturum',
 
   // Add server configuration for development
   server: {
