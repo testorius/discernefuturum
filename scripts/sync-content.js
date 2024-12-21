@@ -1,86 +1,185 @@
-import { google } from '@google/docs-api';
-import { drive } from '@google/drive-api';
+import { google } from 'googleapis';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
-import sharp from 'sharp';
+import dotenv from 'dotenv';
 
-async function processImage(driveId, auth) {
-  const driveService = google.drive({ version: 'v3', auth });
-  
-  // Get file metadata
-  const file = await driveService.files.get({
-    fileId: driveId,
-    fields: 'webContentLink,thumbnailLink'
-  });
-
-  // Option 1: Use Google Drive direct link
-  const directLink = file.data.webContentLink;
-  
-  // Option 2: Download and process image (recommended for optimization)
-  const response = await driveService.files.get(
-    { fileId: driveId, alt: 'media' },
-    { responseType: 'stream' }
-  );
-  
-  // Process with Sharp for optimization
-  const imageBuffer = await streamToBuffer(response.data);
-  const processedImage = await sharp(imageBuffer)
-    .resize(1200, 630, { fit: 'inside' })
-    .webp({ quality: 80 })
-    .toBuffer();
-  
-  // Save to public folder
-  const publicPath = join(process.cwd(), 'public/images/profile.webp');
-  await writeFile(publicPath, processedImage);
-  
-  // Get dimensions
-  const metadata = await sharp(processedImage).metadata();
-  
-  return {
-    url: '/images/profile.webp', // Local path after processing
-    width: metadata.width,
-    height: metadata.height,
-    driveId,
-    shareableLink: directLink
-  };
-}
+dotenv.config();
 
 async function syncContent() {
-  const auth = await google.auth.getClient({
-    scopes: [
-      'https://www.googleapis.com/auth/documents.readonly',
-      'https://www.googleapis.com/auth/drive.readonly'
-    ]
-  });
-  
-  const docs = google.docs({ version: 'v1', auth });
-  const content = await docs.documents.get({
-    documentId: process.env.GOOGLE_DOC_ID
-  });
-  
-  // Parse the document content
-  const parsedContent = parseDocContent(content);
-  
-  // Process images from Google Drive
-  const imageData = await processImage(parsedContent.images.profile.driveId, auth);
-  
-  // Update content with processed image data
-  parsedContent.images.profile = imageData;
-  
-  // Save as JSON in content collection
-  await writeFile(
-    join(process.cwd(), 'src/content/homepage.json'),
-    JSON.stringify(parsedContent, null, 2)
-  );
+  try {
+    const auth = new google.auth.GoogleAuth({
+      credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS),
+      scopes: ['https://www.googleapis.com/auth/documents.readonly']
+    });
+
+    const docs = google.docs({ version: 'v1', auth });
+    
+    // Fetch document content
+    const document = await docs.documents.get({
+      documentId: process.env.GOOGLE_DOC_ID
+    });
+
+    // Parse the document content
+    const content = parseDocument(document);
+
+    // Save to content collection
+    await writeFile(
+      join(process.cwd(), 'src/content/homepage.json'),
+      JSON.stringify(content, null, 2)
+    );
+
+    console.log('Content synced successfully');
+  } catch (error) {
+    console.error('Error syncing content:', error);
+    process.exit(1);
+  }
 }
 
-// Helper function to convert stream to buffer
-async function streamToBuffer(stream) {
-  const chunks = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
+function parseDocument(document) {
+  const content = document.data;
+  const elements = content.body.content;
+  
+  let currentSection = '';
+  const parsedContent = {
+    hero: {},
+    seo: {},
+    services: [],
+    images: {
+      profile: {
+        url: '',
+        width: 1200,
+        height: 630,
+        alt: '',
+        type: 'image/webp'
+      }
+    },
+    jsonLd: {
+      founder: {
+        name: '',
+        jobTitle: '',
+        description: '',
+        knowsAbout: []
+      },
+      address: {
+        streetAddress: '',
+        addressLocality: '',
+        postalCode: '',
+        addressRegion: '',
+        addressCountry: ''
+      },
+      contact: {
+        email: '',
+        telephone: ''
+      },
+      social: {
+        linkedin: '',
+        website: ''
+      }
+    }
+  };
+
+  // Helper function to get text content
+  function getTextContent(element) {
+    return element.paragraph?.elements?.[0]?.textRun?.content?.trim() || '';
   }
-  return Buffer.concat(chunks);
+
+  // Process each element
+  for (const element of elements) {
+    const text = getTextContent(element);
+
+    // Skip empty lines
+    if (!text) continue;
+
+    // Check for section headers
+    if (text.startsWith('# ')) {
+      currentSection = text.replace('# ', '').toLowerCase();
+      continue;
+    }
+
+    // Parse content based on current section
+    switch (currentSection) {
+      case 'seo information':
+        if (text.startsWith('Page Title: ')) {
+          parsedContent.seo.title = text.replace('Page Title: ', '');
+        } else if (text.startsWith('Meta Description: ')) {
+          parsedContent.seo.description = text.replace('Meta Description: ', '');
+        } else if (text.startsWith('Website Name: ')) {
+          parsedContent.seo.siteName = text.replace('Website Name: ', '');
+        }
+        break;
+
+      case 'hero section':
+        if (text.startsWith('Small Title Above: ')) {
+          parsedContent.hero.uptitle = text.replace('Small Title Above: ', '');
+        } else if (text.startsWith('Main Heading: ')) {
+          parsedContent.hero.title = text.replace('Main Heading: ', '');
+        } else if (text.startsWith('Subheading: ')) {
+          parsedContent.hero.subtitle = text.replace('Subheading: ', '');
+        } else if (text.startsWith('• ')) {
+          if (!parsedContent.hero.valueProps) {
+            parsedContent.hero.valueProps = [];
+          }
+          parsedContent.hero.valueProps.push(text.replace('• ', ''));
+        }
+        break;
+
+      case 'services':
+        if (text.startsWith('## ')) {
+          // New service
+          const serviceName = text.replace('## ', '');
+          parsedContent.services.push({
+            name: serviceName,
+            description: '',
+            category: '',
+            icon: {
+              url: '',
+              alt: serviceName
+            }
+          });
+        } else if (text.startsWith('Category: ') && parsedContent.services.length > 0) {
+          parsedContent.services[parsedContent.services.length - 1].category = 
+            text.replace('Category: ', '');
+        } else if (text.startsWith('Description: ') && parsedContent.services.length > 0) {
+          parsedContent.services[parsedContent.services.length - 1].description = 
+            text.replace('Description: ', '');
+        }
+        break;
+
+      case 'profile image':
+        const imageMatch = text.match(/{{\'(.+?)\'}}/)
+        if (imageMatch) {
+          parsedContent.images.profile.alt = imageMatch[1];
+          parsedContent.images.profile.url = `/images/alexanderpaul.webp`;
+        }
+        break;
+
+      case 'contact information':
+        if (text.startsWith('Email: ')) {
+          parsedContent.jsonLd.contact.email = text.replace('Email: ', '');
+        } else if (text.startsWith('Address: ')) {
+          parsedContent.jsonLd.address.streetAddress = text.replace('Address: ', '');
+        } else if (text.startsWith('City: ')) {
+          parsedContent.jsonLd.address.addressLocality = text.replace('City: ', '');
+        } else if (text.startsWith('Postal Code: ')) {
+          parsedContent.jsonLd.address.postalCode = text.replace('Postal Code: ', '');
+        } else if (text.startsWith('Region: ')) {
+          parsedContent.jsonLd.address.addressRegion = text.replace('Region: ', '');
+        } else if (text.startsWith('Country: ')) {
+          parsedContent.jsonLd.address.addressCountry = text.replace('Country: ', '');
+        }
+        break;
+
+      case 'social links':
+        if (text.startsWith('LinkedIn: ')) {
+          parsedContent.jsonLd.social.linkedin = text.replace('LinkedIn: ', '');
+        } else if (text.startsWith('Website: ')) {
+          parsedContent.jsonLd.social.website = text.replace('Website: ', '');
+        }
+        break;
+    }
+  }
+
+  return parsedContent;
 }
 
 syncContent().catch(console.error);
