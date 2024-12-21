@@ -222,14 +222,36 @@ try {
 }
 
 function processImageReference(text) {
-  // Instead of extracting Drive IDs, extract filenames
-  // Example: If doc contains "image: profile.webp", it will use that filename
-  const filename = // extract filename from text
+  // Extract filename from text
+  const imageMatch = text.match(/Profile Image: (.+)/);
+  if (!imageMatch) return null;
+  
+  const filename = imageMatch[1].trim();
+  
+  // Extract alt text
+  const altMatch = text.match(/Alt Text: (.+)/);
+  const alt = altMatch ? altMatch[1].trim() : '';
+  
+  // Extract dimensions
+  const widthMatch = text.match(/Width: (\d+)/);
+  const heightMatch = text.match(/Height: (\d+)/);
+  
   return {
-    filename,    // Just store the filename
-    width: 800,  // You might want to get these from the actual image
-    height: 600, // You might want to get these from the actual image
-    alt: "...",
-    type: "image/webp"
+    filename,
+    width: widthMatch ? parseInt(widthMatch[1]) : 1200,
+    height: heightMatch ? parseInt(heightMatch[1]) : 630,
+    alt,
+    type: 'image/webp'
+  };
+}
+
+async function processDocument(doc) {
+  // ... rest of your processing logic
+  
+  return {
+    // ... other content
+    images: {
+      profile: processImageReference(doc)
+    }
   };
 }
