@@ -1,6 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 
-const homepage = defineCollection({
+const homeCollection = defineCollection({
   type: 'data',
   schema: z.object({
     hero: z.object({
@@ -17,7 +17,7 @@ const homepage = defineCollection({
           text: z.string(),
           link: z.string()
         })
-      }).optional()
+      })
     }),
     seo: z.object({
       title: z.string(),
@@ -69,5 +69,5 @@ const homepage = defineCollection({
 });
 
 export const collections = {
-  homepage
+  'home': homeCollection,
 };

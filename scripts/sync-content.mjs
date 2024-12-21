@@ -28,7 +28,7 @@ async function syncContent() {
     const content = parseDocument(document);
 
     // Save to content collection
-    const contentPath = join(dirname(__dirname), 'src/content/homepage.json');
+    const contentPath = join(dirname(__dirname), 'src/content/home/homepage.json');
     await writeFile(contentPath, JSON.stringify(content, null, 2));
 
     console.log('Content synced successfully to:', contentPath);

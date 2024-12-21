@@ -32,8 +32,8 @@ export default defineConfig({
   },
 
   // Add output configuration
-  output: 'server',
-  adapter: cloudflare(),
+  output: 'static',
+  //adapter: cloudflare(),
 
   // Add compress option for production builds
   compressHTML: true,
@@ -75,6 +75,12 @@ export default defineConfig({
   content: {
     collections: {
       // If you need any special collection-level settings
+    }
+  },
+
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp'
     }
   }
 });
