@@ -33,6 +33,8 @@ jobs:
 
       - name: Install, build, and upload site
         uses: withastro/action@v1
+        with:
+          package-manager: npm
 
   deploy:
     needs: build
