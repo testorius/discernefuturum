@@ -1,7 +1,12 @@
 import { google } from 'googleapis';
 import { writeFile } from 'fs/promises';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+
+// Get current directory with ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 dotenv.config();
 
@@ -23,12 +28,10 @@ async function syncContent() {
     const content = parseDocument(document);
 
     // Save to content collection
-    await writeFile(
-      join(process.cwd(), 'src/content/homepage.json'),
-      JSON.stringify(content, null, 2)
-    );
+    const contentPath = join(dirname(__dirname), 'src/content/homepage.json');
+    await writeFile(contentPath, JSON.stringify(content, null, 2));
 
-    console.log('Content synced successfully');
+    console.log('Content synced successfully to:', contentPath);
   } catch (error) {
     console.error('Error syncing content:', error);
     process.exit(1);
@@ -41,12 +44,31 @@ function parseDocument(document) {
   
   let currentSection = '';
   const parsedContent = {
-    hero: {},
-    seo: {},
+    hero: {
+      uptitle: '',
+      title: '',
+      subtitle: '',
+      valueProps: [],
+      cta: {
+        primary: {
+          text: '',
+          link: ''
+        },
+        secondary: {
+          text: '',
+          link: ''
+        }
+      }
+    },
+    seo: {
+      title: '',
+      description: '',
+      siteName: ''
+    },
     services: [],
     images: {
       profile: {
-        url: '',
+        url: '/images/alexanderpaul.webp',
         width: 1200,
         height: 630,
         alt: '',
@@ -116,16 +138,24 @@ function parseDocument(document) {
         } else if (text.startsWith('Subheading: ')) {
           parsedContent.hero.subtitle = text.replace('Subheading: ', '');
         } else if (text.startsWith('• ')) {
-          if (!parsedContent.hero.valueProps) {
-            parsedContent.hero.valueProps = [];
-          }
           parsedContent.hero.valueProps.push(text.replace('• ', ''));
+        } else if (text.startsWith('[button_primary]')) {
+          const match = text.match(/\[button_primary\](.*?)\]\s*→\s*(.*)/);
+          if (match) {
+            parsedContent.hero.cta.primary.text = match[1];
+            parsedContent.hero.cta.primary.link = match[2];
+          }
+        } else if (text.startsWith('[button_secondary]')) {
+          const match = text.match(/\[button_secondary\](.*?)\]\s*→\s*(.*)/);
+          if (match) {
+            parsedContent.hero.cta.secondary.text = match[1];
+            parsedContent.hero.cta.secondary.link = match[2];
+          }
         }
         break;
 
       case 'services':
         if (text.startsWith('## ')) {
-          // New service
           const serviceName = text.replace('## ', '');
           parsedContent.services.push({
             name: serviceName,
@@ -142,6 +172,13 @@ function parseDocument(document) {
         } else if (text.startsWith('Description: ') && parsedContent.services.length > 0) {
           parsedContent.services[parsedContent.services.length - 1].description = 
             text.replace('Description: ', '');
+        } else if (text.startsWith('Icon: ') && parsedContent.services.length > 0) {
+          const iconMatch = text.match(/Icon:\s*{{\'(.*?)\'}}/)
+          if (iconMatch) {
+            const service = parsedContent.services[parsedContent.services.length - 1];
+            service.icon.alt = iconMatch[1];
+            service.icon.url = `/images/icons/${service.name.toLowerCase().replace(/\s+/g, '-')}.svg`;
+          }
         }
         break;
 
@@ -149,7 +186,6 @@ function parseDocument(document) {
         const imageMatch = text.match(/{{\'(.+?)\'}}/)
         if (imageMatch) {
           parsedContent.images.profile.alt = imageMatch[1];
-          parsedContent.images.profile.url = `/images/alexanderpaul.webp`;
         }
         break;
 
@@ -182,4 +218,5 @@ function parseDocument(document) {
   return parsedContent;
 }
 
+// Run the sync
 syncContent().catch(console.error);
