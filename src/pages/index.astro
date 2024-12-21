@@ -2,7 +2,6 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import ServicesGrid from '../components/ServicesGrid.astro';
-import ChatInterface from '../components/ChatInterface';
 import { getEntry } from 'astro:content';
 
 const homepage = await getEntry('home', 'homepage');
@@ -143,5 +142,4 @@ const mainImage = {
     valueProps={hero.valueProps}
   />
   <ServicesGrid services={services} />
-  <ChatInterface client:load />
 </Layout>
