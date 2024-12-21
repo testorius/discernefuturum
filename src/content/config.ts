@@ -3,6 +3,11 @@ import { defineCollection, z } from 'astro:content';
 const homepage = defineCollection({
   type: 'data',
   schema: z.object({
+    seo: z.object({
+      title: z.string(),
+      description: z.string(),
+      siteName: z.string()
+    }),
     hero: z.object({
       uptitle: z.string(),
       title: z.string(),
@@ -17,54 +22,46 @@ const homepage = defineCollection({
           text: z.string(),
           link: z.string()
         })
-      }).optional()
+      })
     }),
-    seo: z.object({
-      title: z.string(),
-      description: z.string(),
-      siteName: z.string()
-    }),
-    services: z.array(z.object({
-      name: z.string(),
-      description: z.string(),
-      category: z.string(),
-      icon: z.object({
-        url: z.string(),
-        alt: z.string()
-      }).optional()
-    })),
     images: z.object({
       profile: z.object({
         url: z.string(),
-        width: z.number(),
-        height: z.number(),
         alt: z.string(),
-        type: z.string().default('image/webp')
+        width: z.number(),
+        height: z.number()
+      }),
+      heroBackground: z.object({
+        url: z.string(),
+        alt: z.string()
       })
     }),
-    jsonLd: z.object({
-      founder: z.object({
-        name: z.string(),
-        jobTitle: z.string(),
-        description: z.string(),
-        knowsAbout: z.array(z.string())
+    services: z.array(z.object({
+      name: z.string(),
+      icon: z.object({
+        url: z.string(),
+        alt: z.string()
       }),
+      description: z.string(),
+      category: z.string(),
+      link: z.string()
+    })),
+    contact: z.object({
+      email: z.string(),
       address: z.object({
-        streetAddress: z.string(),
-        addressLocality: z.string(),
+        street: z.string(),
+        city: z.string(),
         postalCode: z.string(),
-        addressRegion: z.string(),
-        addressCountry: z.string()
-      }),
-      contact: z.object({
-        email: z.string(),
-        telephone: z.string().optional()
-      }),
-      social: z.object({
-        linkedin: z.string(),
-        website: z.string().optional()
+        region: z.string(),
+        country: z.string()
       })
-    })
+    }),
+    social: z.object({
+      linkedin: z.string(),
+      twitter: z.string(),
+      github: z.string().optional()
+    }),
+    variables: z.record(z.string(), z.string())
   })
 });
 
