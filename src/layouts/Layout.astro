@@ -32,7 +32,7 @@ const googleFontsUrl = `https://fonts.googleapis.com/css2?family=${fontFamilies}
 ---
 
 <!DOCTYPE html>
-<html lang="de" class="scroll-smooth">
+<html lang="de">
 <!-- 
 👋👋👋 Thanks for visiting! 
 Nope, this wasn't built using WordPress, Wix or PowerPoint. 
@@ -41,44 +41,13 @@ Let's have a coffee or kombucha to Chat about our next masterplan 🤓👉 https
 Cheers! Alex
 -->
   <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content={Astro.generator}>
-    
-    <SEO 
-      title={title} 
-      description={description}
-      {...seoProps}
-    />
-
-    <!-- Enhanced Favicon Support -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#00a966">
-    <meta name="theme-color" content="#ffffff">
-    <meta name="msapplication-TileColor" content="#00a966">
-    <link rel="manifest" href="/site.webmanifest">
-    
-    <!-- Optimized Google Fonts loading -->
-    <link 
-      href={googleFontsUrl}
-      rel="stylesheet"
-      media="print"
-      data-media="all"
-      onload="this.media=this.dataset.media;this.removeAttribute('data-media');"
-    >
-    <!-- Fallback for no-JS -->
-    <noscript>
-      <link
-        href={googleFontsUrl}
-        rel="stylesheet"
-      >
-    </noscript>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/discernefuturum/images/alexanderpaullogo.svg" type="image/svg+xml">
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <!-- ... rest of your meta tags ... -->
   </head>
   <body class="min-h-screen bg-gray-50 flex flex-col">
     <Navigation />
