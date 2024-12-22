@@ -10,34 +10,43 @@ interface Props {
 }
 
 const { uptitle, title, subtitle, valueProps, image } = Astro.props;
+
+const HERO_IMAGE = {
+  width: 600,
+  height: 600,
+  quality: 85
+} as const;
 ---
 
 <section class="relative overflow-hidden bg-white py-20 sm:py-24 lg:py-28">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <!-- Header text center aligned -->
+    <!-- Header text with improved contrast -->
     <div class="text-center mb-16">
-      <p class="text-base uppercase tracking-wide text-lime-600 lg:text-2xl mb-3">
+      <p class="text-base uppercase tracking-wide text-lime-700 lg:text-2xl mb-3">
         {uptitle}
       </p>
       <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl mb-4">
         {title}
       </h1>
-      <p class="mx-auto max-w-2xl text-2xl text-gray-600">
+      <p class="mx-auto max-w-2xl text-2xl text-gray-700">
         {subtitle}
       </p>
     </div>
 
-    <!-- Two column layout with explicit breakpoints -->
+    <!-- Two column layout -->
     <div class="flex flex-col md:flex-row md:items-start md:justify-between">
       <!-- Left column - Image -->
       <div class="flex-1 md:max-w-[48%]">
-        <div class="w-full overflow-hidden rounded-xl" style="height: 600px;">
+        <div 
+          class="w-full overflow-hidden rounded-xl" 
+          style={`height: ${HERO_IMAGE.height}px;`}
+        >
           <Image
             src={image}
             alt="Alexander Paul Profile"
-            width={600}
-            height={600}
-            quality={85}
+            width={HERO_IMAGE.width}
+            height={HERO_IMAGE.height}
+            quality={HERO_IMAGE.quality}
             format="webp"
             loading="eager"
             class="w-full h-full object-cover"
@@ -45,9 +54,9 @@ const { uptitle, title, subtitle, valueProps, image } = Astro.props;
         </div>
       </div>
 
-      <!-- Right column - Value props -->
+      <!-- Right column - Value props with improved contrast -->
       <div class="flex-1 md:max-w-[48%] mt-12 md:mt-0">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6">
+        <h2 class="text-2xl font-semibold text-gray-900 mb-6">
           Mein Profil für Ihren Erfolg:
         </h2>
         <div class="space-y-6 mb-8">
@@ -55,7 +64,7 @@ const { uptitle, title, subtitle, valueProps, image } = Astro.props;
             <div class="flex items-center group">
               <div class="flex-shrink-0">
                 <svg 
-                  class="h-6 w-6 text-lime-500 transform transition-transform duration-300 ease-out group-hover:scale-110" 
+                  class="h-6 w-6 text-lime-700 transform transition-transform duration-300 ease-out group-hover:scale-110" 
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke-width="2" 
@@ -75,13 +84,13 @@ const { uptitle, title, subtitle, valueProps, image } = Astro.props;
           ))}
         </div>
 
-        <!-- CTA Buttons with rel="noopener" -->
+        <!-- CTA Buttons with improved contrast -->
         <div class="flex flex-col space-y-4">
           <a
             href="https://app.reclaim.ai/m/alexanderpaul/coffee"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-lime-600 rounded-xl hover:bg-lime-500 transition-colors duration-200"
+            class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-lime-700 rounded-xl hover:bg-lime-800 transition-colors duration-200"
           >
             ☕ 15 Minuten Kaffee mit mir
           </a>
@@ -89,7 +98,7 @@ const { uptitle, title, subtitle, valueProps, image } = Astro.props;
             href="https://linkedin.com/in/1xp"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-blue-600 border-2 border-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-colors duration-200"
+            class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-blue-700 border-2 border-blue-700 rounded-xl hover:bg-blue-700 hover:text-white transition-colors duration-200"
           >
             Auf LinkedIn verbinden
           </a>
