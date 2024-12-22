@@ -155,11 +155,11 @@ function processServicesSection(content) {
   for (const block of serviceBlocks) {
     console.log('\nProcessing block:', block);
     
-    // Extract each field with explicit regex
-    const nameMatch = block.match(/## Service \d+:\s*(.*?)(?:\n|$)/);
-    const categoryMatch = block.match(/Category:\s*(.*?)(?:\n|$)/);
-    const descriptionMatch = block.match(/Description:\s*(.*?)(?:\n|$)/);
-    const imageMatch = block.match(/Image:\s*(.*?)(?:\n|$)/);
+    // Updated regex patterns with more flexible whitespace matching
+    const nameMatch = block.match(/## Service \d+:\s*([^\n]+)/);
+    const categoryMatch = block.match(/Category:\s*([^\n]+)/);
+    const descriptionMatch = block.match(/Description:\s*([^\n]+)/);
+    const imageMatch = block.match(/Image:\s*([^\n]+)/);
     
     console.log('Extracted matches:', {
       name: nameMatch?.[1],
@@ -179,10 +179,16 @@ function processServicesSection(content) {
         }
       };
       
-      console.log('Created service:', service);
+      console.log('Created service:', JSON.stringify(service, null, 2));
       services.push(service);
     } else {
-      console.log('Skipping incomplete service block - missing required fields');
+      console.log('Failed matches:', {
+        name: nameMatch,
+        category: categoryMatch,
+        description: descriptionMatch,
+        image: imageMatch
+      });
+      console.log('Raw block:\n```\n' + block + '\n```');
     }
   }
   
