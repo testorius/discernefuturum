@@ -133,10 +133,11 @@ function processServicesSection(content) {
         currentService.category = line.split(':')[1].trim();
       } else if (line.startsWith('Description:')) {
         currentService.description = line.split(':')[1].trim();
-      } else if (line.startsWith('Icon:')) {
+      } else if (line.startsWith('Image:')) {
+        const filename = line.split(':')[1].trim();
         currentService.icon = {
-          url: line.split(':')[1].trim(),
-          alt: `${currentService.category} icon`
+          url: `/discernefuturum/images/${filename}`,
+          alt: `${currentService.category || 'Service'} icon`
         };
       } else if (line.match(/^[^:]+:/)) {
         currentService.name = line.split(':')[0].trim();
