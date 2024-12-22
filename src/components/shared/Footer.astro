@@ -1,5 +1,12 @@
 ---
 const currentYear = new Date().getFullYear();
+
+// Explicit logo dimensions for SEO
+const FOOTER_LOGO = {
+  width: 32,  // h-8 = 2rem = 32px
+  height: 32,
+  alt: "Alexander Paul Logo"
+} as const;
 ---
 
 <footer class="w-full bg-white/80 backdrop-blur-md border-t border-gray-100">
@@ -9,8 +16,11 @@ const currentYear = new Date().getFullYear();
       <div class="flex items-center space-x-2">
         <img 
           src="/discernefuturum/images/alexanderpaullogo.svg" 
-          alt="Alexander Paul Logo" 
+          alt={FOOTER_LOGO.alt}
+          width={FOOTER_LOGO.width}
+          height={FOOTER_LOGO.height}
           class="h-8 w-auto"
+          loading="lazy"
         />
         <a href="/" class="text-sm sm:text-base text-gray-600 hover:text-gray-900 transition-colors duration-200">
           © {currentYear} Alexander Paul
@@ -18,7 +28,7 @@ const currentYear = new Date().getFullYear();
       </div>
 
       <div class="flex items-center space-x-6">
-                <a 
+        <a 
           href="/datenschutz" 
           class="text-sm sm:text-base text-gray-600 hover:text-lime-600 transition-colors duration-200"
         >
