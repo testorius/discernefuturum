@@ -55,9 +55,25 @@ async function downloadAssetFolder(drive, folderId) {
 }
 
 function extractSection(content, sectionTitle) {
-  const regex = new RegExp(`# ${sectionTitle}\\s*([^#]*)`);
-  const match = content.match(regex);
-  return match ? match[1].trim() : '';
+  console.log(`Looking for section: ${sectionTitle}`);
+  
+  const sections = content.split(/(?=# )/);
+  
+  const section = sections.find(s => s.trim().startsWith(`# ${sectionTitle}`));
+  
+  if (!section) {
+    console.log(`Section "${sectionTitle}" not found`);
+    return '';
+  }
+  
+  const sectionContent = section
+    .replace(`# ${sectionTitle}`, '')
+    .trim();
+    
+  console.log(`Found section "${sectionTitle}":`);
+  console.log(sectionContent);
+  
+  return sectionContent;
 }
 
 function extractListItems(content) {
@@ -121,46 +137,42 @@ function processImagesSection(content) {
 
 function processServicesSection(content) {
   const servicesSection = extractSection(content, 'Services');
-  console.log('Raw Services Section:', servicesSection);
-  
   const services = [];
   let currentService = null;
 
-  servicesSection.split('\n').forEach(line => {
-    line = line.trim();
-    console.log('Processing line:', line);
-
-    if (line.startsWith('## Service')) {
-      if (currentService) {
-        console.log('Pushing service:', currentService);
-        services.push(currentService);
-      }
-      currentService = {};
-      const serviceName = line.split(':')[1]?.trim();
-      if (serviceName) {
-        currentService.name = serviceName;
-      }
-    } else if (currentService && line) {
-      if (line.startsWith('Category:')) {
-        currentService.category = line.split(':')[1].trim();
-      } else if (line.startsWith('Description:')) {
-        currentService.description = line.split(':')[1].trim();
-      } else if (line.startsWith('Image:')) {
-        const filename = line.split(':')[1].trim();
-        currentService.icon = {
-          url: `/discernefuturum/images/${filename}`,
-          alt: `${currentService.name || 'Service'} icon`
-        };
-      } else if (line.startsWith('Content:')) {
-        currentService.content = line.split(':')[1].trim();
-      }
+  const serviceBlocks = servicesSection.split(/(?=## Service)/);
+  
+  serviceBlocks.forEach(block => {
+    if (!block.trim()) return;
+    
+    console.log('Processing service block:', block);
+    
+    const lines = block.split('\n').map(line => line.trim()).filter(Boolean);
+    
+    const nameMatch = lines[0].match(/## Service \d+: (.+)/);
+    if (nameMatch) {
+      currentService = {
+        name: nameMatch[1].trim()
+      };
+      
+      lines.slice(1).forEach(line => {
+        if (line.startsWith('Category:')) {
+          currentService.category = line.split(':')[1].trim();
+        } else if (line.startsWith('Description:')) {
+          currentService.description = line.split(':')[1].trim();
+        } else if (line.startsWith('Image:')) {
+          const filename = line.split(':')[1].trim();
+          currentService.icon = {
+            url: `/discernefuturum/images/${filename}`,
+            alt: `${currentService.name} icon`
+          };
+        }
+      });
+      
+      console.log('Processed service:', currentService);
+      services.push(currentService);
     }
   });
-  
-  if (currentService) {
-    console.log('Pushing final service:', currentService);
-    services.push(currentService);
-  }
 
   console.log('Final services array:', services);
   return services;
