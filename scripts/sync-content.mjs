@@ -57,19 +57,15 @@ async function downloadAssetFolder(drive, folderId) {
 function extractSection(content, sectionTitle) {
   console.log(`Looking for section: ${sectionTitle}`);
   
-  const sections = content.split(/(?=# )/);
+  const sectionRegex = new RegExp(`# ${sectionTitle}([^#]*?)(?=# |$)`, 's');
+  const match = content.match(sectionRegex);
   
-  const section = sections.find(s => s.trim().startsWith(`# ${sectionTitle}`));
-  
-  if (!section) {
+  if (!match) {
     console.log(`Section "${sectionTitle}" not found`);
     return '';
   }
   
-  const sectionContent = section
-    .replace(`# ${sectionTitle}`, '')
-    .trim();
-    
+  const sectionContent = match[1].trim();
   console.log(`Found section "${sectionTitle}":`);
   console.log(sectionContent);
   
@@ -138,41 +134,26 @@ function processImagesSection(content) {
 function processServicesSection(content) {
   const servicesSection = extractSection(content, 'Services');
   const services = [];
-  let currentService = null;
-
-  const serviceBlocks = servicesSection.split(/(?=## Service)/);
   
-  serviceBlocks.forEach(block => {
-    if (!block.trim()) return;
+  const serviceRegex = /## Service \d+: ([^\n]+)\nCategory: ([^\n]+)\nDescription: ([^\n]+)\nImage: ([^\n]+)/g;
+  
+  let match;
+  while ((match = serviceRegex.exec(servicesSection)) !== null) {
+    const [_, name, category, description, image] = match;
     
-    console.log('Processing service block:', block);
+    const service = {
+      name: name.trim(),
+      category: category.trim(),
+      description: description.trim(),
+      icon: {
+        url: `/discernefuturum/images/${image.trim()}`,
+        alt: `${name.trim()} icon`
+      }
+    };
     
-    const lines = block.split('\n').map(line => line.trim()).filter(Boolean);
-    
-    const nameMatch = lines[0].match(/## Service \d+: (.+)/);
-    if (nameMatch) {
-      currentService = {
-        name: nameMatch[1].trim()
-      };
-      
-      lines.slice(1).forEach(line => {
-        if (line.startsWith('Category:')) {
-          currentService.category = line.split(':')[1].trim();
-        } else if (line.startsWith('Description:')) {
-          currentService.description = line.split(':')[1].trim();
-        } else if (line.startsWith('Image:')) {
-          const filename = line.split(':')[1].trim();
-          currentService.icon = {
-            url: `/discernefuturum/images/${filename}`,
-            alt: `${currentService.name} icon`
-          };
-        }
-      });
-      
-      console.log('Processed service:', currentService);
-      services.push(currentService);
-    }
-  });
+    console.log('Processed service:', service);
+    services.push(service);
+  }
 
   console.log('Final services array:', services);
   return services;
