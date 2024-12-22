@@ -3,24 +3,11 @@ interface Props {
   uptitle: string;
   title: string;
   subtitle: string;
-  image: string;
   valueProps: string[];
+  image: string;
 }
 
-const {
-  uptitle = "Growth Consultant aus Zürich",
-  title = "Building Digital Products That Matter",
-  subtitle = "Helping companies transform their ideas into successful digital products through strategic consulting and technical leadership.",
-  image = "images/alexanderpaul.jpg",
-  valueProps = [
-    "16 Jahre SEO- & SEA Erfahrung",
-    "...",
-    "...",
-    "...",
-    "...",
-    "..."
-  ]
-} = Astro.props;
+const { uptitle, title, subtitle, valueProps, image } = Astro.props;
 ---
 
 <section class="relative overflow-hidden bg-white py-20 sm:py-24 lg:py-28">

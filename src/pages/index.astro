@@ -10,8 +10,13 @@ console.log('=== DEBUG: Page Load Start ===');
 const homepage = await getEntry('home', 'homepage');
 console.log('Homepage Entry:', homepage);
 
-const { hero, seo, services } = homepage?.data || {};
-console.log('Destructured Data:', { hero, seo, servicesLength: services?.length });
+const { hero, seo, services, images } = homepage?.data || {};
+console.log('Destructured Data:', { 
+  hasHero: !!hero, 
+  hasSeo: !!seo, 
+  servicesLength: services?.length,
+  hasImages: !!images
+});
 
 // Ensure services is an array
 const safeServices = Array.isArray(services) ? services : [];
@@ -28,6 +33,7 @@ console.log('Safe Services:', safeServices);
     title={hero?.title || ''}
     subtitle={hero?.subtitle || ''}
     valueProps={hero?.valueProps || []}
+    image={images?.profile?.url || '/discernefuturum/images/alexanderpaul.webp'}
   />
   
   <!-- Add debug comment -->
