@@ -109,9 +109,9 @@ function processImagesSection(content) {
   
   return {
     profile: {
-      url: `/images/${filename}`,
-      filename: filename,
-      alt: alt,
+      url: `/discernefuturum/images/${filename}`,
+      filename,
+      alt,
       width: 1200,
       height: 630,
       type: 'image/webp'
