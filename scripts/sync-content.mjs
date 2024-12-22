@@ -171,16 +171,19 @@ function processServicesSection(content) {
         } : null
       };
       
+      console.log('Created service object:', service);
+      
+      // Validate service has required fields
       if (service.name && service.category && service.description && service.icon) {
-        console.log('Processed service:', service);
         services.push(service);
+        console.log('Service added to array');
       } else {
-        console.log('Skipping incomplete service:', service);
+        console.log('Service skipped due to missing fields');
       }
     }
   });
 
-  console.log(`Processed ${services.length} services:`, services);
+  console.log(`\nFinal services array (${services.length} items):`, JSON.stringify(services, null, 2));
   return services;
 }
 
