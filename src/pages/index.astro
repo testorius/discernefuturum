@@ -19,6 +19,8 @@ const mainImage = {
   alt: "Alexander Paul - SEO Freelancer & Growth Consultant",
   type: "image/webp"
 };
+
+const imagePath = `/images/${homepage.data.images.profile.filename}`;
 ---
 <Layout 
   title={seo.title}
@@ -144,7 +146,7 @@ const mainImage = {
   />
   <ServicesGrid services={services} />
   <Image 
-    src={homepage.data.images.profile.url}
+    src={imagePath}
     alt={homepage.data.images.profile.alt}
     width={homepage.data.images.profile.width}
     height={homepage.data.images.profile.height}

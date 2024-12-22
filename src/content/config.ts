@@ -35,6 +35,7 @@ const homeCollection = defineCollection({
     })),
     images: z.object({
       profile: z.object({
+        url: z.string(),
         filename: z.string(),
         width: z.number(),
         height: z.number(),
