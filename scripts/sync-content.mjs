@@ -148,7 +148,7 @@ async function processDocument(doc) {
     await downloadAssetFolder(drive, assetFolderId);
   }
 
-  return {
+  const processedContent = {
     hero: processHeroSection(doc),
     seo: processSEOSection(doc),
     services: processServicesSection(doc),
@@ -180,6 +180,8 @@ async function processDocument(doc) {
       }
     }
   };
+
+  return processedContent;
 }
 
 async function main() {
