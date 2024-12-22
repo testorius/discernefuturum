@@ -4,7 +4,6 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
-import compress from 'astro-compress';
 
 /** @type {import('astro').AstroUserConfig} */
 export default defineConfig({
@@ -20,7 +19,6 @@ export default defineConfig({
       changefreq: 'weekly',
       priority: 0.7,
     }),
-    compress(),
   ],
 
   // Improve build output
