@@ -183,18 +183,24 @@ function processServicesSection(content) {
 }
 
 async function processDocument(doc) {
+  console.log("Processing document content...");
+  
   const assetLocationMatch = doc.match(/# Asset Location: (.+)/);
   const assetFolderId = assetLocationMatch ? assetLocationMatch[1].trim() : null;
+
+  // Process services first and store the result
+  const processedServices = processServicesSection(doc);
+  console.log("Processed services:", processedServices);
 
   if (assetFolderId) {
     const drive = initializeGoogleDrive();
     await downloadAssetFolder(drive, assetFolderId);
   }
 
-  return {
+  const content = {
     hero: processHeroSection(doc),
     seo: processSEOSection(doc),
-    services: processServicesSection(doc),
+    services: processedServices, // Use the processed services
     images: processImagesSection(doc),
     jsonLd: {
       founder: {
@@ -223,34 +229,39 @@ async function processDocument(doc) {
       }
     }
   };
+
+  // Verify the content before writing
+  console.log("Final content to be written:", JSON.stringify(content, null, 2));
+
+  return content;
 }
 
 async function main() {
   try {
-    console.log('Checking environment variables:');
-    console.log('GOOGLE_DOC_ID exists:', !!process.env.GOOGLE_DOC_ID);
-    console.log('GOOGLE_CREDENTIALS exists:', !!process.env.GOOGLE_CREDENTIALS);
-
-    const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
-    console.log('Credentials parsed successfully');
-
+    console.log('Starting content sync process...');
+    
     const drive = initializeGoogleDrive();
+    console.log('Google Drive initialized');
 
     const response = await drive.files.export({
       fileId: process.env.GOOGLE_DOC_ID,
       mimeType: 'text/plain',
     });
+    console.log('Document exported from Google Drive');
 
     const content = await processDocument(response.data);
+    console.log('Document processed, services count:', content.services.length);
 
     await fs.mkdir('src/content/home', { recursive: true });
-
+    
+    // Write the content with pretty formatting for debugging
     await fs.writeFile(
       'src/content/home/homepage.json',
       JSON.stringify(content, null, 2)
     );
 
-    console.log('Content synced successfully!');
+    console.log('Content written to homepage.json');
+    console.log('Content sync completed successfully!');
   } catch (error) {
     console.error('Error syncing content:', error);
     throw error;

@@ -8,6 +8,17 @@ import { Image } from 'astro:assets';
 const homepage = await getEntry('home', 'homepage');
 const { hero, seo, services } = homepage?.data || {};
 
+// Debug logging
+console.log('Homepage data loaded:', {
+  hasHero: !!hero,
+  hasSeo: !!seo,
+  servicesCount: services?.length || 0,
+  services: services // Log the actual services array
+});
+
+// Ensure services is always an array
+const safeServices = services || [];
+
 // Add debug logging
 console.log('Homepage data:', homepage?.data);
 console.log('Services data:', services);
@@ -148,7 +159,7 @@ const imagePath = `/discernefuturum/images/${homepage.data.images.profile.filena
     image="/discernefuturum/images/alexanderpaul.webp"
     valueProps={hero.valueProps}
   />
-  <ServicesGrid services={services} />
+  <ServicesGrid services={safeServices} />
   <Image 
     src={imagePath}
     alt={homepage.data.images.profile.alt}
