@@ -8,6 +8,10 @@ import { Image } from 'astro:assets';
 const homepage = await getEntry('home', 'homepage');
 const { hero, seo, services } = homepage?.data || {};
 
+// Add debug logging
+console.log('Homepage data:', homepage?.data);
+console.log('Services data:', services);
+
 // Construct canonical URL for homepage
 const canonicalURL = new URL('/', Astro.site).toString();
 

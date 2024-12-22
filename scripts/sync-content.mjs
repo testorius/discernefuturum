@@ -121,18 +121,26 @@ function processImagesSection(content) {
 
 function processServicesSection(content) {
   const servicesSection = extractSection(content, 'Services');
+  console.log('Raw Services Section:', servicesSection);
+  
   const services = [];
   let currentService = null;
 
   servicesSection.split('\n').forEach(line => {
+    line = line.trim();
+    console.log('Processing line:', line);
+
     if (line.startsWith('## Service')) {
-      if (currentService) services.push(currentService);
+      if (currentService) {
+        console.log('Pushing service:', currentService);
+        services.push(currentService);
+      }
       currentService = {};
       const serviceName = line.split(':')[1]?.trim();
       if (serviceName) {
         currentService.name = serviceName;
       }
-    } else if (currentService) {
+    } else if (currentService && line) {
       if (line.startsWith('Category:')) {
         currentService.category = line.split(':')[1].trim();
       } else if (line.startsWith('Description:')) {
@@ -143,11 +151,18 @@ function processServicesSection(content) {
           url: `/discernefuturum/images/${filename}`,
           alt: `${currentService.name || 'Service'} icon`
         };
+      } else if (line.startsWith('Content:')) {
+        currentService.content = line.split(':')[1].trim();
       }
     }
   });
   
-  if (currentService) services.push(currentService);
+  if (currentService) {
+    console.log('Pushing final service:', currentService);
+    services.push(currentService);
+  }
+
+  console.log('Final services array:', services);
   return services;
 }
 
