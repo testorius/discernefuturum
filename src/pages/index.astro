@@ -3,167 +3,34 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import ServicesGrid from '../components/ServicesGrid.astro';
 import { getEntry } from 'astro:content';
-import { Image } from 'astro:assets';
+
+// Add debug logging for the entire process
+console.log('=== DEBUG: Page Load Start ===');
 
 const homepage = await getEntry('home', 'homepage');
-console.log('Raw homepage data:', homepage);
+console.log('Homepage Entry:', homepage);
 
 const { hero, seo, services } = homepage?.data || {};
+console.log('Destructured Data:', { hero, seo, servicesLength: services?.length });
 
-// More detailed debug logging
-console.log('Homepage data loaded:', {
-  hasHero: !!hero,
-  hasSeo: !!seo,
-  servicesCount: services?.length || 0,
-  rawServices: services, // Log the raw services data
-  homepageKeys: homepage?.data ? Object.keys(homepage.data) : []
-});
-
-// Ensure services is always an array and log its contents
+// Ensure services is an array
 const safeServices = Array.isArray(services) ? services : [];
-console.log('Safe services array:', safeServices);
-
-// Construct canonical URL for homepage
-const canonicalURL = new URL('/', Astro.site).toString();
-
-// Enhanced image configuration
-const mainImage = {
-  url: "/discernefuturum/images/alexanderpaul.webp",
-  width: 1200,
-  height: 630,
-  alt: "Alexander Paul - SEO Freelancer & Growth Consultant",
-  type: "image/webp"
-};
-
-const imagePath = `/discernefuturum/images/${homepage.data.images.profile.filename}`;
+console.log('Safe Services:', safeServices);
 ---
+
 <Layout 
-  title={seo.title}
-  description={seo.description}
-  siteName={seo.siteName}
-  image={mainImage}
-  canonicalURL={canonicalURL}
-  og={{
-    title: "Growth & SEO Consultant Zürich | Alexander Paul",
-    description: seo.description,
-    image: mainImage,
-    type: "website",
-    locale: "de_CH",
-    siteName: seo.siteName
-  }}
-  twitter={{
-    card: "summary_large_image",
-    title: "Growth & SEO Consultant Zürich | Alexander Paul",
-    description: seo.description,
-    image: "/discernefuturum/images/alexanderpaul.webp",
-    creator: "@6c7870"
-  }}
-  alternates={{
-    canonical: canonicalURL,
-    languages: {
-      "de-CH": canonicalURL
-    }
-  }}
-  jsonLd={{
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": "https://alexanderpaul.ch/#business",
-    "name": "Alexander Paul - SEO Freelancer & Growth Consultant aus Zürich",
-    "image": mainImage.url,
-    "description": seo.description,
-    "url": "https://alexanderpaul.ch",
-    "telephone": "",
-    "email": "hi@alexanderpaul.ch",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Thurgauerstrasse 152",
-      "addressLocality": "Glattpark (Opfikon)",
-      "postalCode": "8152",
-      "addressRegion": "ZH",
-      "addressCountry": "CH"
-    },
-    "areaServed": [{
-      "@type": "City",
-      "name": "Zürich"
-    }, {
-      "@type": "Country",
-      "name": "Schweiz"
-    }],
-    "founder": {
-      "@type": "Person",
-      "name": "Alexander Paul",
-      "jobTitle": "SEO Freelancer & (AI-) Growth Strategie Konsultant",
-      "description": "15+ Jahre Erfahrung im digitalen Marketing mit Fokus auf SEO, SEA, Analytics, Growth Strategie und KI-Automatisierung.",
-      "knowsAbout": [
-        "SEO",
-        "AI-SEO",
-        "SEO Audit",
-        "Digital Marketing",
-        "Growth Strategie",
-        "Growth Hacking",
-        "Digital Analytics",
-        "Paid Advertising",
-        "Meta Ads",
-        "Google Ads",
-        "Bing Ads",
-        "Microsoft Advertising",
-        "AI Automation",
-        "KI Prozessautomatisierung",
-        "Content Strategie",
-        "Web Analytics",
-        "Performance Marketing"
-      ]
-    },
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "SEO Freelance & Growth Consulting Dienstleistungen",
-      "itemListElement": services
-    },
-    "sameAs": [
-      "https://www.linkedin.com/in/1xp/",
-      "https://alexpaul.io/"
-    ],
-    "openingHoursSpecification": {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday"
-      ],
-      "opens": "07:00",
-      "closes": "18:00"
-    },
-    "potentialAction": {
-      "@type": "InteractAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://app.reclaim.ai/m/alexanderpaul/coffee",
-        "actionPlatform": [
-          "http://schema.org/DesktopWebPlatform",
-          "http://schema.org/MobileWebPlatform"
-        ]
-      },
-      "result": {
-        "@type": "Service",
-        "name": "SEO & Growth Consulting"
-      }
-    }
-  }}
+  title={seo?.title || 'Default Title'}
+  description={seo?.description || 'Default Description'}
+  siteName={seo?.siteName || 'Default Site Name'}
 >
   <Hero
-    uptitle={hero.uptitle}
-    title={hero.title}
-    subtitle={hero.subtitle}
-    image="/discernefuturum/images/alexanderpaul.webp"
-    valueProps={hero.valueProps}
+    uptitle={hero?.uptitle || ''}
+    title={hero?.title || ''}
+    subtitle={hero?.subtitle || ''}
+    valueProps={hero?.valueProps || []}
   />
+  
+  <!-- Add debug comment -->
+  <!-- Services Count: {safeServices.length} -->
   <ServicesGrid services={safeServices} />
-  <Image 
-    src={imagePath}
-    alt={homepage.data.images.profile.alt}
-    width={homepage.data.images.profile.width}
-    height={homepage.data.images.profile.height}
-  />
 </Layout>

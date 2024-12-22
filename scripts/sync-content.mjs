@@ -264,6 +264,7 @@ async function main() {
 
     // Verify the file was written correctly
     const writtenContent = await fs.readFile('src/content/home/homepage.json', 'utf-8');
+    console.log('Written JSON:', written);
     const parsedContent = JSON.parse(writtenContent);
     console.log('Verification - Services in homepage.json:', {
       servicesCount: parsedContent.services?.length || 0,

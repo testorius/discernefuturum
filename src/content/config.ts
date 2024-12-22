@@ -1,6 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 
-const homeCollection = defineCollection({
+const home = defineCollection({
   type: 'data',
   schema: z.object({
     hero: z.object({
@@ -26,13 +26,13 @@ const homeCollection = defineCollection({
     }),
     services: z.array(z.object({
       name: z.string(),
-      description: z.string(),
       category: z.string(),
+      description: z.string(),
       icon: z.object({
         url: z.string(),
         alt: z.string()
-      }).optional()
-    })),
+      })
+    })).default([]),
     images: z.object({
       profile: z.object({
         url: z.string(),
@@ -70,5 +70,5 @@ const homeCollection = defineCollection({
 });
 
 export const collections = {
-  'home': homeCollection,
+  'home': home,
 };
