@@ -128,6 +128,10 @@ function processServicesSection(content) {
     if (line.startsWith('## Service')) {
       if (currentService) services.push(currentService);
       currentService = {};
+      const serviceName = line.split(':')[1]?.trim();
+      if (serviceName) {
+        currentService.name = serviceName;
+      }
     } else if (currentService) {
       if (line.startsWith('Category:')) {
         currentService.category = line.split(':')[1].trim();
@@ -137,10 +141,8 @@ function processServicesSection(content) {
         const filename = line.split(':')[1].trim();
         currentService.icon = {
           url: `/discernefuturum/images/${filename}`,
-          alt: `${currentService.category || 'Service'} icon`
+          alt: `${currentService.name || 'Service'} icon`
         };
-      } else if (line.match(/^[^:]+:/)) {
-        currentService.name = line.split(':')[0].trim();
       }
     }
   });
