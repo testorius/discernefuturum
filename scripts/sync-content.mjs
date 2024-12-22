@@ -1,6 +1,7 @@
 import { google } from 'googleapis';
 import fs from 'fs/promises';
 import path from 'path';
+import { createWriteStream } from 'fs';
 
 function initializeGoogleDrive() {
   const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
@@ -34,11 +35,17 @@ async function downloadAssetFolder(drive, folderId) {
       );
 
       await new Promise((resolve, reject) => {
-        const writeStream = fs.createWriteStream(destPath);
+        const writeStream = createWriteStream(destPath);
         res.data
           .pipe(writeStream)
-          .on('finish', resolve)
-          .on('error', reject);
+          .on('finish', () => {
+            console.log(`Successfully downloaded ${file.name}`);
+            resolve();
+          })
+          .on('error', (error) => {
+            console.error(`Error downloading ${file.name}:`, error);
+            reject(error);
+          });
       });
     }
   } catch (error) {
