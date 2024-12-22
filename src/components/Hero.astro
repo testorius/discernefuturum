@@ -31,16 +31,16 @@ const { uptitle, title, subtitle, valueProps, image } = Astro.props;
     <div class="flex flex-col md:flex-row md:items-start md:justify-between">
       <!-- Left column - Image -->
       <div class="flex-1 md:max-w-[48%]">
-        <div class="w-full overflow-hidden rounded-xl">
+        <div class="w-full overflow-hidden rounded-xl" style="height: 600px;">
           <Image
             src={image}
             alt="Alexander Paul Profile"
             width={600}
-            height={800}
+            height={600}
             quality={85}
             format="webp"
             loading="eager"
-            class="h-full w-full object-cover"
+            class="w-full h-full object-cover"
           />
         </div>
       </div>
@@ -75,16 +75,20 @@ const { uptitle, title, subtitle, valueProps, image } = Astro.props;
           ))}
         </div>
 
-        <!-- CTA Buttons -->
+        <!-- CTA Buttons with rel="noopener" -->
         <div class="flex flex-col space-y-4">
           <a
             href="https://app.reclaim.ai/m/alexanderpaul/coffee"
+            target="_blank"
+            rel="noopener noreferrer"
             class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-lime-600 rounded-xl hover:bg-lime-500 transition-colors duration-200"
           >
             ☕ 15 Minuten Kaffee mit mir
           </a>
           <a
             href="https://linkedin.com/in/1xp"
+            target="_blank"
+            rel="noopener noreferrer"
             class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-blue-600 border-2 border-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-colors duration-200"
           >
             Auf LinkedIn verbinden
