@@ -57,6 +57,21 @@ async function downloadAssetFolder(drive, folderId) {
 function extractSection(content, sectionTitle) {
   console.log(`Looking for section: ${sectionTitle}`);
   
+  if (sectionTitle === 'Services') {
+    const startMatch = content.match(/\n## Service 1:/);
+    if (!startMatch) {
+      console.log('No services section found');
+      return '';
+    }
+    
+    const startIndex = startMatch.index;
+    const sectionContent = content.slice(startIndex).split('\n\n\n')[0];
+    
+    console.log(`Found section "${sectionTitle}":`);
+    console.log(sectionContent);
+    return sectionContent;
+  }
+  
   const sectionRegex = new RegExp(`# ${sectionTitle}([^#]*?)(?=# |$)`, 's');
   const match = content.match(sectionRegex);
   
@@ -65,11 +80,7 @@ function extractSection(content, sectionTitle) {
     return '';
   }
   
-  const sectionContent = match[1].trim();
-  console.log(`Found section "${sectionTitle}":`);
-  console.log(sectionContent);
-  
-  return sectionContent;
+  return match[1].trim();
 }
 
 function extractListItems(content) {
@@ -135,27 +146,39 @@ function processServicesSection(content) {
   const servicesSection = extractSection(content, 'Services');
   const services = [];
   
-  const serviceRegex = /## Service \d+: ([^\n]+)\nCategory: ([^\n]+)\nDescription: ([^\n]+)\nImage: ([^\n]+)/g;
+  const serviceBlocks = servicesSection.split(/(?=\n## Service \d+:)/);
   
-  let match;
-  while ((match = serviceRegex.exec(servicesSection)) !== null) {
-    const [_, name, category, description, image] = match;
+  serviceBlocks.forEach(block => {
+    if (!block.trim()) return;
     
-    const service = {
-      name: name.trim(),
-      category: category.trim(),
-      description: description.trim(),
-      icon: {
-        url: `/discernefuturum/images/${image.trim()}`,
-        alt: `${name.trim()} icon`
+    console.log('Processing service block:', block);
+    
+    const nameMatch = block.match(/## Service \d+: (.+?)(?:\n|$)/);
+    const categoryMatch = block.match(/Category: (.+?)(?:\n|$)/);
+    const descriptionMatch = block.match(/Description: (.+?)(?:\n|$)/);
+    const imageMatch = block.match(/Image: (.+?)(?:\n|$)/);
+    
+    if (nameMatch) {
+      const service = {
+        name: nameMatch[1].trim(),
+        category: categoryMatch ? categoryMatch[1].trim() : '',
+        description: descriptionMatch ? descriptionMatch[1].trim() : '',
+        icon: imageMatch ? {
+          url: `/discernefuturum/images/${imageMatch[1].trim()}`,
+          alt: `${nameMatch[1].trim()} icon`
+        } : null
+      };
+      
+      if (service.name && service.category && service.description && service.icon) {
+        console.log('Processed service:', service);
+        services.push(service);
+      } else {
+        console.log('Skipping incomplete service:', service);
       }
-    };
-    
-    console.log('Processed service:', service);
-    services.push(service);
-  }
+    }
+  });
 
-  console.log('Final services array:', services);
+  console.log(`Processed ${services.length} services:`, services);
   return services;
 }
 
