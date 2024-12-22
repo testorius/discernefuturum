@@ -18,35 +18,32 @@ async function downloadAssetFolder(drive, folderId) {
     console.log(`Creating directory: ${assetsDir}`);
     await fs.mkdir(assetsDir, { recursive: true });
 
-    const response = await drive.files.list({
+    const res = await drive.files.list({
       q: `'${folderId}' in parents`,
       fields: 'files(id, name, mimeType)',
     });
 
-    console.log(`Found ${response.data.files.length} files in Drive folder`);
+    const files = res.data.files;
+    console.log(`Found ${files.length} files in assets folder`);
 
-    for (const file of response.data.files) {
-      const destPath = path.join(assetsDir, file.name);
-      console.log(`Downloading ${file.name}...`);
-      
-      const res = await drive.files.get(
+    for (const file of files) {
+      const dest = path.join(assetsDir, file.name);
+      console.log(`Downloading: ${file.name} to ${dest}`);
+
+      const response = await drive.files.get(
         { fileId: file.id, alt: 'media' },
         { responseType: 'stream' }
       );
 
+      const writer = createWriteStream(dest);
+      response.data.pipe(writer);
+
       await new Promise((resolve, reject) => {
-        const writeStream = createWriteStream(destPath);
-        res.data
-          .pipe(writeStream)
-          .on('finish', () => {
-            console.log(`Successfully downloaded ${file.name}`);
-            resolve();
-          })
-          .on('error', (error) => {
-            console.error(`Error downloading ${file.name}:`, error);
-            reject(error);
-          });
+        writer.on('finish', resolve);
+        writer.on('error', reject);
       });
+
+      console.log(`Downloaded: ${file.name}`);
     }
   } catch (error) {
     console.error('Error downloading assets:', error);
@@ -228,6 +225,12 @@ async function main() {
     
     const drive = initializeGoogleDrive();
     console.log('Google Drive initialized');
+
+    // Add this line to ensure assets are downloaded/updated
+    if (process.env.GOOGLE_DRIVE_FOLDER_ID) {
+      await downloadAssetFolder(drive, process.env.GOOGLE_DRIVE_FOLDER_ID);
+      console.log('Assets downloaded successfully');
+    }
 
     const response = await drive.files.export({
       fileId: process.env.GOOGLE_DOC_ID,
