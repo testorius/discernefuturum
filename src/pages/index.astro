@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import ServicesGrid from '../components/ServicesGrid.astro';
 import { getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 
 const homepage = await getEntry('home', 'homepage');
 const { hero, seo, services } = homepage?.data || {};
@@ -142,4 +143,10 @@ const mainImage = {
     valueProps={hero.valueProps}
   />
   <ServicesGrid services={services} />
+  <Image 
+    src={homepage.data.images.profile.url}
+    alt={homepage.data.images.profile.alt}
+    width={homepage.data.images.profile.width}
+    height={homepage.data.images.profile.height}
+  />
 </Layout>

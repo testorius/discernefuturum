@@ -13,13 +13,16 @@ function initializeGoogleDrive() {
 
 async function downloadAssetFolder(drive, folderId) {
   try {
-    const assetsDir = 'src/content/home/assets';
+    const assetsDir = 'public/images';
+    console.log(`Creating directory: ${assetsDir}`);
     await fs.mkdir(assetsDir, { recursive: true });
 
     const response = await drive.files.list({
       q: `'${folderId}' in parents`,
       fields: 'files(id, name, mimeType)',
     });
+
+    console.log(`Found ${response.data.files.length} files in Drive folder`);
 
     for (const file of response.data.files) {
       const destPath = path.join(assetsDir, file.name);
@@ -94,10 +97,14 @@ function processImagesSection(content) {
   const imagesSection = extractSection(content, 'Images');
   const lines = imagesSection.split('\n');
   
+  const filename = lines.find(l => l.startsWith('Profile Image:'))?.split(':')[1]?.trim() || '';
+  const alt = lines.find(l => l.startsWith('Alt Text:'))?.split(':')[1]?.trim() || '';
+  
   return {
     profile: {
-      filename: lines.find(l => l.startsWith('Profile Image:'))?.split(':')[1]?.trim() || '',
-      alt: lines.find(l => l.startsWith('Alt Text:'))?.split(':')[1]?.trim() || '',
+      url: `/images/${filename}`,
+      filename: filename,
+      alt: alt,
       width: 1200,
       height: 630,
       type: 'image/webp'
