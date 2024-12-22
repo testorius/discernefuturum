@@ -4,6 +4,7 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
+import compress from 'astro-compress';
 
 /** @type {import('astro').AstroUserConfig} */
 export default defineConfig({
@@ -17,15 +18,15 @@ export default defineConfig({
         return !excludedPages.includes(new URL(page).pathname);
       },
       changefreq: 'weekly',
-      priority: 1.0,
-      lastmod: new Date(),
+      priority: 0.7,
     }),
+    compress(),
   ],
 
   // Improve build output
   build: {
     // Enhance assets handling
-    assets: 'assets',
+    assets: '_assets',
     // Improve CSS bundling
     inlineStylesheets: 'auto',
   },
@@ -61,6 +62,14 @@ export default defineConfig({
           drop_debugger: true,
         },
       },
+      assetsDir: '_assets',
+      rollupOptions: {
+        output: {
+          assetFileNames: 'assets/[name].[hash][extname]',
+          chunkFileNames: 'assets/[name].[hash].js',
+          entryFileNames: 'assets/[name].[hash].js',
+        },
+      },
     },
     // Add cache busting for assets
     assetsInclude: ['**/*.svg', '**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif'],
@@ -68,6 +77,20 @@ export default defineConfig({
     optimizeDeps: {
       exclude: ['@astrojs/react'],
     },
+    plugins: [
+      {
+        name: 'configure-response-headers',
+        configureServer: (server) => {
+          server.middlewares.use((req, res, next) => {
+            // Cache static assets for 1 year
+            if (req.url?.includes('.') && !req.url?.includes('hot-update')) {
+              res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+            }
+            next();
+          });
+        },
+      },
+    ],
   },
 
   image: {

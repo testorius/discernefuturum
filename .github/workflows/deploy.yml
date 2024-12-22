@@ -1,0 +1,7 @@
+  - name: Upload Pages artifact
+    uses: actions/upload-pages-artifact@v3
+    with:
+      path: dist
+      headers: |
+        /*
+          Cache-Control: public, max-age=31536000, immutable 
