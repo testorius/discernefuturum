@@ -13,7 +13,6 @@ const { uptitle, title, subtitle, valueProps, image } = Astro.props;
 ---
 
 <section class="relative overflow-hidden bg-white py-20 sm:py-24 lg:py-28">
-  <!-- Center content container -->
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <!-- Header text center aligned -->
     <div class="text-center mb-16">
@@ -29,27 +28,27 @@ const { uptitle, title, subtitle, valueProps, image } = Astro.props;
     </div>
 
     <!-- Two column grid -->
-    <div class="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
       <!-- Left column - Image -->
-      <div class="mt-16 sm:mt-24 lg:mt-0 lg:col-span-6">
-        <div class="sm:max-w-md sm:w-full sm:mx-auto sm:rounded-lg sm:overflow-hidden">
+      <div class="relative w-full">
+        <div class="aspect-[3/2] w-full overflow-hidden rounded-xl">
           <Image
             src={image}
             alt="Alexander Paul Profile"
-            width={565}
-            height={565}
+            width={600}
+            height={400}
             quality={85}
             format="webp"
             loading="eager"
-            class="w-full h-auto object-cover"
+            class="h-full w-full object-cover"
           />
         </div>
       </div>
 
-      <!-- Right column - Value props and CTA -->
-      <div class="flex flex-col justify-start h-full">
+      <!-- Right column - Value props -->
+      <div class="flex flex-col justify-start">
         <h2 class="text-2xl font-semibold text-gray-800 mb-6">
-        Mein Profil für Ihren Erfolg:
+          Mein Profil für Ihren Erfolg:
         </h2>
         <div class="space-y-6 mb-8">
           {valueProps.map((prop) => (
@@ -76,20 +75,18 @@ const { uptitle, title, subtitle, valueProps, image } = Astro.props;
           ))}
         </div>
 
-        <!-- Enhanced CTA Buttons -->
-        <div class="text-center lg:text-left mt-4 flex flex-col items-center lg:items-start space-y-4">
+        <!-- CTA Buttons -->
+        <div class="flex flex-col space-y-4">
           <a
             href="https://app.reclaim.ai/m/alexanderpaul/coffee"
-            class="group relative inline-flex items-center justify-center w-full max-w-md rounded-xl bg-gradient-to-r from-lime-600 to-lime-500 px-12 py-5 text-2xl font-display font-semibold text-white shadow-lg hover:from-lime-500 hover:to-lime-400 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-2 transition-all duration-300 ease-out hover:shadow-lime-200/50 hover:shadow-xl"
+            class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-lime-600 rounded-xl hover:bg-lime-500 transition-colors duration-200"
           >
-            ☕ 15 Minuten <br />Kaffee mit mir
+            ☕ 15 Minuten Kaffee mit mir
           </a>
-                    
-          <!-- Outline Button for LinkedIn -->
-            <a
+          <a
             href="https://linkedin.com/in/1xp"
-            class="group inline-flex items-center justify-center w-full max-w-md px-12 py-4 border-2 border-blue-500 text-blue-500 rounded-lg text-xl font-display font-semibold hover:bg-blue-500 hover:text-white transition-colors duration-200 ease-out"
-            >
+            class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-blue-600 border-2 border-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-colors duration-200"
+          >
             Auf LinkedIn verbinden
           </a>
         </div>
