@@ -1,6 +1,6 @@
 ---
 interface Service {
-  title: string;
+  name: string;
   category: string;
   description: string;
   content: string;
@@ -39,7 +39,7 @@ const { services } = Astro.props;
               <img src={service.icon.url} alt={service.icon.alt} class="h-12 w-12" />
             </div>
             
-            <h3 class="text-2xl font-bold mb-4 text-white tracking-tight">{service.title}</h3>
+            <h3 class="text-2xl font-bold mb-4 text-white tracking-tight">{service.name}</h3>
             
             <p class="text-base text-gray-300 mb-4 leading-relaxed min-h-[4rem]">
               {service.description}

@@ -4,39 +4,28 @@ import Hero from '../components/Hero.astro';
 import ServicesGrid from '../components/ServicesGrid.astro';
 import { getEntry } from 'astro:content';
 
-// Add debug logging for the entire process
-console.log('=== DEBUG: Page Load Start ===');
-
 const homepage = await getEntry('home', 'homepage');
-console.log('Homepage Entry:', homepage);
-
 const { hero, seo, services, images } = homepage?.data || {};
-console.log('Destructured Data:', { 
-  hasHero: !!hero, 
-  hasSeo: !!seo, 
-  servicesLength: services?.length,
-  hasImages: !!images
-});
 
-// Ensure services is an array
+// Ensure all data is properly typed
+const safeHero = {
+  uptitle: hero?.uptitle || '',
+  title: hero?.title || '',
+  subtitle: hero?.subtitle || '',
+  valueProps: hero?.valueProps || [],
+  image: images?.profile?.url || '/discernefuturum/images/alexanderpaul.webp'
+};
+
+const safeSeo = {
+  title: seo?.title || 'Default Title',
+  description: seo?.description || 'Default Description',
+  siteName: seo?.siteName || 'Alexander Paul'
+};
+
 const safeServices = Array.isArray(services) ? services : [];
-console.log('Safe Services:', safeServices);
 ---
 
-<Layout 
-  title={seo?.title || 'Default Title'}
-  description={seo?.description || 'Default Description'}
-  siteName={seo?.siteName || 'Default Site Name'}
->
-  <Hero
-    uptitle={hero?.uptitle || ''}
-    title={hero?.title || ''}
-    subtitle={hero?.subtitle || ''}
-    valueProps={hero?.valueProps || []}
-    image={images?.profile?.url || '/discernefuturum/images/alexanderpaul.webp'}
-  />
-  
-  <!-- Add debug comment -->
-  <!-- Services Count: {safeServices.length} -->
+<Layout {...safeSeo}>
+  <Hero {...safeHero} />
   <ServicesGrid services={safeServices} />
 </Layout>

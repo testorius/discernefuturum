@@ -7,12 +7,14 @@ import Footer from '../components/shared/Footer.astro';
 // Extend SEOProps to include required layout props
 interface Props extends Omit<SEOProps, 'title' | 'description'> {
   title: string;  // Make title required
-  description?: string;  // Optional with default
+  description: string;  // Make description required
+  siteName?: string;  // Optional with default
 }
 
 const { 
   title, 
-  description = "Alexander Paul - Professional Consulting Services",
+  description, 
+  siteName = "Alexander Paul",
   ...seoProps
 } = Astro.props;
 

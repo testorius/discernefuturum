@@ -178,55 +178,39 @@ function processServicesSection(content) {
 }
 
 async function processDocument(doc) {
-  console.log("Processing document content...");
-  
-  const assetLocationMatch = doc.match(/# Asset Location: (.+)/);
-  const assetFolderId = assetLocationMatch ? assetLocationMatch[1].trim() : null;
-
-  // Process services first and store the result
-  const processedServices = processServicesSection(doc);
-  console.log("Processed services:", processedServices);
-
-  if (assetFolderId) {
-    const drive = initializeGoogleDrive();
-    await downloadAssetFolder(drive, assetFolderId);
-  }
-
   const content = {
-    hero: processHeroSection(doc),
-    seo: processSEOSection(doc),
-    services: processedServices, // Use the processed services
-    images: processImagesSection(doc),
-    jsonLd: {
-      founder: {
-        name: "Alexander Paul",
-        jobTitle: "SEO Freelancer & Growth Consultant",
-        description: "Digital Marketing Expert with focus on SEO, Analytics and Growth",
-        knowsAbout: [
-          "SEO",
-          "Digital Analytics",
-          "Growth Marketing",
-          "Paid Advertising"
-        ]
-      },
-      address: {
-        streetAddress: "Hardturmstrasse 161",
-        addressLocality: "Zürich",
-        postalCode: "8005",
-        addressRegion: "ZH",
-        addressCountry: "CH"
-      },
-      contact: {
-        email: "alex@discernefuturum.com"
-      },
-      social: {
-        linkedin: "https://www.linkedin.com/in/alexander-paul/"
+    hero: {
+      uptitle: '',
+      title: '',
+      subtitle: '',
+      valueProps: [],
+      cta: {
+        primary: { text: '', link: '' },
+        secondary: { text: '', link: '' }
+      }
+    },
+    seo: {
+      title: '',
+      description: '',
+      siteName: ''
+    },
+    services: processServicesSection(doc),
+    images: {
+      profile: {
+        url: '',
+        filename: '',
+        alt: '',
+        width: 0,
+        height: 0,
+        type: ''
       }
     }
   };
 
-  // Verify the content before writing
-  console.log("Final content to be written:", JSON.stringify(content, null, 2));
+  // Process each section
+  content.hero = processHeroSection(doc);
+  content.seo = processSEOSection(doc);
+  content.images = processImagesSection(doc);
 
   return content;
 }
