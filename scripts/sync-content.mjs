@@ -153,13 +153,22 @@ function processServicesSection(content) {
   console.log(`Found ${serviceBlocks.length} service blocks`);
   
   for (const block of serviceBlocks) {
-    // Extract each field with explicit regex
-    const nameMatch = block.match(/## Service \d+: (.*?)(?:\n|$)/);
-    const categoryMatch = block.match(/Category: (.*?)(?:\n|$)/);
-    const descriptionMatch = block.match(/Description: (.*?)(?:\n|$)/);
-    const imageMatch = block.match(/Image: (.*?)(?:\n|$)/);
+    console.log('\nProcessing block:', block);
     
-    if (nameMatch && categoryMatch && descriptionMatch && imageMatch) {
+    // Extract each field with explicit regex
+    const nameMatch = block.match(/## Service \d+:\s*(.*?)(?:\n|$)/);
+    const categoryMatch = block.match(/Category:\s*(.*?)(?:\n|$)/);
+    const descriptionMatch = block.match(/Description:\s*(.*?)(?:\n|$)/);
+    const imageMatch = block.match(/Image:\s*(.*?)(?:\n|$)/);
+    
+    console.log('Extracted matches:', {
+      name: nameMatch?.[1],
+      category: categoryMatch?.[1],
+      description: descriptionMatch?.[1],
+      image: imageMatch?.[1]
+    });
+    
+    if (nameMatch?.[1] && categoryMatch?.[1] && descriptionMatch?.[1] && imageMatch?.[1]) {
       const service = {
         name: nameMatch[1].trim(),
         category: categoryMatch[1].trim(),
@@ -170,15 +179,14 @@ function processServicesSection(content) {
         }
       };
       
-      console.log('Adding service:', JSON.stringify(service, null, 2));
+      console.log('Created service:', service);
       services.push(service);
     } else {
-      console.log('Skipping incomplete service block:', block);
-      console.log('Matches:', { nameMatch, categoryMatch, descriptionMatch, imageMatch });
+      console.log('Skipping incomplete service block - missing required fields');
     }
   }
   
-  console.log(`Processed ${services.length} services:`, JSON.stringify(services, null, 2));
+  console.log(`\nProcessed ${services.length} services:`, JSON.stringify(services, null, 2));
   return services;
 }
 
@@ -250,27 +258,27 @@ async function main() {
     console.log('Document exported from Google Drive');
 
     const content = await processDocument(response.data);
-    console.log('Document processed, services count:', content.services.length);
+    console.log(`Document processed with ${content.services.length} services`);
 
+    // Create the directory if it doesn't exist
     await fs.mkdir('src/content/home', { recursive: true });
     
+    // Write the content
     const jsonContent = JSON.stringify(content, null, 2);
     await fs.writeFile('src/content/home/homepage.json', jsonContent);
-
-    // Verify the file was written correctly
-    const writtenContent = await fs.readFile('src/content/home/homepage.json', 'utf-8');
-    console.log('Written JSON:', written);
+    
+    // Verify the written content
+    const writtenContent = await fs.readFile('src/content/home/homepage.json', 'utf8');
     const parsedContent = JSON.parse(writtenContent);
-    console.log('Verification - Services in homepage.json:', {
-      servicesCount: parsedContent.services?.length || 0,
-      firstService: parsedContent.services?.[0]
+    console.log('Verification - Services in written file:', {
+      count: parsedContent.services.length,
+      services: parsedContent.services
     });
 
-    console.log('Content written to homepage.json');
-    console.log('Content sync completed successfully!');
+    console.log('Content synced successfully!');
   } catch (error) {
     console.error('Error syncing content:', error);
-    throw error;
+    process.exit(1);
   }
 }
 
