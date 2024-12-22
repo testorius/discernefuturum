@@ -11,19 +11,18 @@ const getNavClass = (currentPath: string) => {
     ? "inline-flex items-center px-3 py-1 text-base font-medium transition-colors duration-200 text-lime-500 border-b-2 border-lime-500" 
     : "inline-flex items-center px-3 py-1 text-base font-medium transition-all duration-200 text-gray-600 hover:text-lime-500 hover:border-b-2 hover:border-lime-500";
 };
-Bildelemente haben keine explizite width und height
+
 const getMobileNavClass = (currentPath: string) => {
   return pathname === currentPath
     ? "block py-2 pl-3 pr-4 text-base font-medium transition-colors duration-200 text-lime-600 border-b-2 border-lime-600"
     : "block py-2 pl-3 pr-4 text-base font-medium transition-colors duration-200 text-gray-600 hover:text-lime-600 hover:border-b-2 hover:border-lime-600";
 };
 
-// Calculate responsive image sizes
-const logoSizes = {
-  base: 56,    // 14 * 4 (h-14 = 3.5rem = 56px)
-  sm: 48,      // Slightly smaller on small screens
-  lg: 64       // Slightly larger on big screens
-};
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+// Import the logo
+import logo from '/public/images/alexanderpaullogo.svg';
 ---
 
 <header class="fixed w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-100 shadow-sm">
@@ -35,10 +34,10 @@ const logoSizes = {
         <a href="/" class="flex items-center">
           <div class="relative w-14 h-14">
             <Image 
-              src="/images/alexanderpaullogo.svg" 
+              src={logo}
               alt="Alexander Paul Logo"
-              width={logoSizes.base}
-              height={logoSizes.base}
+              width={56}
+              height={56}
               class="w-full h-full object-contain"
               loading="eager"
             />
@@ -47,7 +46,7 @@ const logoSizes = {
         </a>
       </div>
 
-      <!-- Desktop Navigation and Let's Talk button -->
+      <!-- Rest of the navigation remains the same -->
       <div class="hidden md:flex items-center space-x-8">
         <div class="flex items-center space-x-8">
           {navItems.map(({ title, path }) => (
@@ -63,7 +62,7 @@ const logoSizes = {
           rel="noopener noreferrer"
           class="inline-flex items-center justify-center px-6 py-2 text-base font-medium text-white bg-black rounded-lg shadow-md hover:bg-gray-800 transition-all duration-200"
         >
-          Let’s Talk ☕  
+          Let's Talk ☕  
         </a>
       </div>
 
@@ -83,6 +82,8 @@ const logoSizes = {
             stroke-width="1.5"
             stroke="currentColor"
             aria-hidden="true"
+            width="24"
+            height="24"
           >
             <path
               stroke-linecap="round"
@@ -109,7 +110,7 @@ const logoSizes = {
           rel="noopener noreferrer"
           class="block w-full text-center py-2 text-base font-medium text-white bg-black rounded-md shadow-md hover:bg-gray-800 transition-all duration-200"
         >
-          Let’s Talk!
+          Let's Talk!
         </a>
       </div>
     </div>
