@@ -13,7 +13,7 @@ const canonicalURL = new URL('/', Astro.site).toString();
 
 // Enhanced image configuration
 const mainImage = {
-  url: "/images/alexanderpaul.webp",
+  url: "/discernefuturum/images/alexanderpaul.webp",
   width: 1200,
   height: 630,
   alt: "Alexander Paul - SEO Freelancer & Growth Consultant",
@@ -40,8 +40,8 @@ const imagePath = `/discernefuturum/images/${homepage.data.images.profile.filena
     card: "summary_large_image",
     title: "Growth & SEO Consultant Zürich | Alexander Paul",
     description: seo.description,
-    image: "/images/alexanderpaul.webp",
-    creator: "@6c7870" // Add if you have Twitter
+    image: "/discernefuturum/images/alexanderpaul.webp",
+    creator: "@6c7870"
   }}
   alternates={{
     canonical: canonicalURL,
@@ -141,7 +141,7 @@ const imagePath = `/discernefuturum/images/${homepage.data.images.profile.filena
     uptitle={hero.uptitle}
     title={hero.title}
     subtitle={hero.subtitle}
-    image="/images/alexanderpaul.webp"
+    image="/discernefuturum/images/alexanderpaul.webp"
     valueProps={hero.valueProps}
   />
   <ServicesGrid services={services} />
