@@ -14,7 +14,7 @@ function initializeGoogleDrive() {
 
 async function downloadAssetFolder(drive, folderId) {
   try {
-    const assetsDir = 'dist/images';
+    const assetsDir = 'dist/discernefuturum/images';
     console.log(`Creating directory: ${assetsDir}`);
     await fs.mkdir(assetsDir, { recursive: true });
 
