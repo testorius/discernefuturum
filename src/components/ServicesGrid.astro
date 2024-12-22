@@ -1,14 +1,14 @@
 ---
 interface Service {
-  name: string;
+  title: string;
   category: string;
   description: string;
-  content?: string;    // Optional content field
-  link?: string;       // Optional link field
-  icon?: {
+  content: string;
+  icon: {
     url: string;
     alt: string;
   };
+  link: string;
 }
 
 interface Props {
@@ -23,48 +23,38 @@ const { services } = Astro.props;
     <!-- Centered Logo with Enhanced Breathing Effect -->
     <div class="mb-8">
       <img 
-        src="/images/alexanderpaullogo.svg" 
+        src="/discernefuturum/images/alexanderpaullogo.svg" 
         alt="Alexander Paul Logo" 
         class="mx-auto h-20 w-20 rounded-full breathing-effect"
       />
     </div>
     
     <h2 class="text-4xl font-bold text-white mb-16 glow-text">Meine Dienstleistungen</h2>
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
     <div class="grid gap-8 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
       {services.map((service) => (
         <div class="service-card group relative flex flex-col h-full">
+          <div class="absolute inset-0 bg-gradient-to-b from-gray-800/90 to-gray-900/90 rounded-2xl transform transition-all duration-300 group-hover:scale-[1.02] group-hover:from-lime-900/90 group-hover:to-lime-950/90"></div>
           <div class="relative flex flex-col h-full p-8 backdrop-blur-sm">
-            {service.icon && (
-              <div class="flex items-center justify-center w-20 h-20 mb-6 mx-auto bg-black/30 rounded-xl transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
-                <img 
-                  src={service.icon.url}
-                  alt={service.icon.alt}
-                  class="h-12 w-12"
-                />
-              </div>
-            )}
+            <div class="flex items-center justify-center w-20 h-20 mb-6 mx-auto bg-black/30 rounded-xl transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+              <img src={service.icon.url} alt={service.icon.alt} class="h-12 w-12" />
+            </div>
             
-            <h3 class="text-2xl font-bold mb-4 text-white tracking-tight">{service.name}</h3>
+            <h3 class="text-2xl font-bold mb-4 text-white tracking-tight">{service.title}</h3>
             
             <p class="text-base text-gray-300 mb-4 leading-relaxed min-h-[4rem]">
               {service.description}
             </p>
             
-            {service.content && (
-              <p class="text-base text-gray-400 mb-6 leading-relaxed flex-grow" set:html={service.content}></p>
-            )}
+            <p class="text-base text-gray-400 mb-6 leading-relaxed flex-grow" set:html={service.content}></p>
             
-            {service.link && (
-              <div class="mt-auto pt-4">
-                <a
-                  href={service.link}
-                  class="inline-flex items-center justify-center w-full px-6 py-3 bg-black/30 text-[#87DD00] border border-[#87DD00] rounded-xl font-medium transition-all duration-300 hover:bg-[#87DD00] hover:text-black group-hover:shadow-lg"
-                >
-                  Mehr erfahren
-                </a>
-              </div>
-            )}
+            <div class="mt-auto pt-4">
+              <a
+                href={service.link}
+                class="inline-flex items-center justify-center w-full px-6 py-3 bg-black/30 text-[#87DD00] border border-[#87DD00] rounded-xl font-medium transition-all duration-300 hover:bg-[#87DD00] hover:text-black group-hover:shadow-lg"
+              >
+                Mehr erfahren
+              </a>
+            </div>
           </div>
         </div>
       ))}
@@ -82,18 +72,6 @@ const { services } = Astro.props;
     transform: translateZ(0);
   }
 
-  @keyframes float {
-    0% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-    100% {
-      transform: translateY(0px);
-    }
-  }
-    /* Enhanced Breathing Effect for Logo */
   @keyframes breathing {
     0%, 100% {
       box-shadow: 0 0 30px 10px rgba(135, 221, 0, 0.2);
@@ -108,6 +86,4 @@ const { services } = Astro.props;
   .breathing-effect {
     animation: breathing 10s ease-in-out infinite;
   }
-
-
 </style>

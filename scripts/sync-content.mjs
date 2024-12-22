@@ -146,53 +146,34 @@ function processServicesSection(content) {
   const servicesSection = extractSection(content, 'Services');
   const services = [];
   
-  // Split by service entries and filter out empty ones
   const serviceBlocks = servicesSection.split(/(?=## Service \d+:)/)
     .filter(block => block.trim());
   
-  console.log(`Found ${serviceBlocks.length} service blocks`);
-  
   for (const block of serviceBlocks) {
-    console.log('\nProcessing block:', block);
-    
-    // Updated regex patterns with more flexible whitespace matching
     const nameMatch = block.match(/## Service \d+:\s*([^\n]+)/);
     const categoryMatch = block.match(/Category:\s*([^\n]+)/);
     const descriptionMatch = block.match(/Description:\s*([^\n]+)/);
+    const contentMatch = block.match(/Content:\s*([^\n]+)/);
     const imageMatch = block.match(/Image:\s*([^\n]+)/);
-    
-    console.log('Extracted matches:', {
-      name: nameMatch?.[1],
-      category: categoryMatch?.[1],
-      description: descriptionMatch?.[1],
-      image: imageMatch?.[1]
-    });
+    const linkMatch = block.match(/Link:\s*([^\n]+)/);
     
     if (nameMatch?.[1] && categoryMatch?.[1] && descriptionMatch?.[1] && imageMatch?.[1]) {
       const service = {
-        name: nameMatch[1].trim(),
+        title: nameMatch[1].trim(),
         category: categoryMatch[1].trim(),
         description: descriptionMatch[1].trim(),
+        content: contentMatch?.[1]?.trim() || '',
         icon: {
           url: `/discernefuturum/images/${imageMatch[1].trim()}`,
           alt: `${nameMatch[1].trim()} icon`
-        }
+        },
+        link: linkMatch?.[1]?.trim() || 'https://app.reclaim.ai/m/alexanderpaul/coffee'
       };
       
-      console.log('Created service:', JSON.stringify(service, null, 2));
       services.push(service);
-    } else {
-      console.log('Failed matches:', {
-        name: nameMatch,
-        category: categoryMatch,
-        description: descriptionMatch,
-        image: imageMatch
-      });
-      console.log('Raw block:\n```\n' + block + '\n```');
     }
   }
   
-  console.log(`\nProcessed ${services.length} services:`, JSON.stringify(services, null, 2));
   return services;
 }
 
