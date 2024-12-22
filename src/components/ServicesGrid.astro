@@ -1,56 +1,5 @@
 ---
-interface Service {
-  icon: string;
-  title: string;
-  description: string;
-  content: string;
-  link?: string;
-}
-
-const services: Service[] = [
-  {
-    icon: "/images/seozürich.svg",
-    title: "'KI-Ready' SEO",
-    description: "Ich helfe Ihnen mit tiefgehender Expertise in technischer und semantischer Suchmaschinenoptimierung für Ihr Content Projekt und bereite Sie auf die neue KI-Ära vor.",
-    content: "Mit einer Kombination aus tiefgehendem technischen Verständnis und Erfahrung mit Content-Projekten in allen Grössenordnungen bin ich der ideale Begleiter auf dem Weg zum organischen Wachstum. Sie haben Angst vor dem Einfluss von AI/KI auf SEO? Beschreiten Sie stattdessen einen alternativen Weg mit mir, der Technologien primär integriert statt abwehrt.",
-    link: "https://app.reclaim.ai/m/alexanderpaul/coffee",
-  },
-  {
-    icon: "/images/lead-generation-schweiz.svg",
-    title: "Lead Generierung & CRO",
-    description: "Ich identifiziere ihre ideale Zielgruppe und verbinde sie effizient mit Ihrem Angebot - über jene Kanäle, die Sinn machen. Alternativ optimiere Ich Ihren bestehenden Funnel.",
-    content: "Im Gesamtpaket: Ich analysiere abgestimmt auf Ihre Ziele die Ausgangslage, helfe Ihnen bei der Optimierung oder Erschaffung Ihrer Landing Page und helfe Ihnen mit jener Art von Kampagne, die für Ihr Szenario und Kundenprofil am meisten Sinn macht. Selbstverständlich gehört dazu ebenfalls die Integration, Konfiguration und Testen Ihres Trackings.",
-    link: "https://app.reclaim.ai/m/alexanderpaul/coffee",
-  },
-  {
-    icon: "/images/growth-hacker-zürich.svg",
-    title: "Growth Strategie",
-    description: "Schaffen Sie nachhaltiges Wachstum mit einer maßgeschneiderten Strategie, die sich an den neuesten Trends und Daten orientiert.",
-    content: "Gemeinsam entwickeln wir eine Growth-Strategie, die Ihr Unternehmen auf das nächste Level bringt. Von der Marktanalyse über die Identifikation lukrativer Kanäle bis hin zur datengetriebenen Optimierung Ihrer Maßnahmen – ich unterstütze Sie bei jedem Schritt. Dabei nutze ich bewährte Methoden und innovative Ansätze, die speziell auf Ihre Zielgruppe und Ihr Geschäftsmodell abgestimmt sind.",
-    link: "https://app.reclaim.ai/m/alexanderpaul/coffee",
-  },
-  {
-    icon: "/images/digital-analytics-freelancer-schweiz.svg",
-    title: "Digital Analytics",
-    description: "Daten liefern die Grundlage für erfolgreiche Entscheidungen. Ein optimiertes Tracking-Setup ist daher die Grundlage für Erfolg.",
-    content: "Als ehemaliger Digital Analytics Manager und -Engineer liegen meine Stärken in der Operationalisierung ihrer Erfolgsmetriken, der Erstellung von Measurement/Tagging Plänen und der Implementierung Ihres Trackings. Auch mit der Erstellung von Dashboards kann ich Ihnen dienen. Plattformen/Tools: Google Tag Manager, Google Analytics, PostHog, Looker.",
-    link: "https://app.reclaim.ai/m/alexanderpaul/coffee",
-  },
-  {
-    icon: "/images/werbekampagnen-agentur.svg",
-    title: "Bezahlte Werbung",
-    description: "Ich untertütze Sie gerne operativ bei beim Aufsetzen oder Optimieren Ihrer bezahlten Werbekampagnen.",
-    content: "Dank solider Erfahrung mit Google Ads (alle Formate), Meta (Facebook / Instagram), LinkedIn sowie Microsoft Advertising (Bing) bin ich ein idealer Support für die Erstellung, Optimierung und Automatisierung von wiederkehrenden Aufgaben (z.B. Ads Script).",
-    link: "https://app.reclaim.ai/m/alexanderpaul/coffee",
-  },
-  {
-    icon: "/images/ki-ai-automatisierung-agentur.svg",
-    title: "KI-Prozessautomatisierung",
-    description: "Jedes Unternehmen kann schon heute immens von KI profitieren, wenn es seine Prozesse kennt.",
-    content: "Gemeinsam bringen wir Klarheit in Ihren 'Funnel' und führen schrittweise Automatisierungen oder Workflows ein, wodurch immer mehr Ihrer monotonen Routineaufgaben durch KI übernommen werden. Ich habe mich intensiv im KI-Bereich weitergebildet und sogar eine <a href='https://workspace.google.com/marketplace/app/gpt_f%C3%BCr_google_sheets_kostenloses_kiaddo/353298171147?hl=de' class='text-[#87DD00] hover:underline'>kostenlose KI-Erweiterung für Google Sheets</a> programmiert und veröffentlicht.",
-    link: "https://app.reclaim.ai/m/alexanderpaul/coffee",
-  },
-];
+const { services } = Astro.props;
 ---
 
 <section class="services-section bg-black py-20 relative overflow-hidden" id="seo-freelancer-zürich-dienstleistungen">
@@ -72,10 +21,16 @@ const services: Service[] = [
           <div class="absolute inset-0 bg-gradient-to-b from-gray-800/90 to-gray-900/90 rounded-2xl transform transition-all duration-300 group-hover:scale-[1.02] group-hover:from-lime-900/90 group-hover:to-lime-950/90"></div>
           <div class="relative flex flex-col h-full p-8 backdrop-blur-sm">
             <div class="flex items-center justify-center w-20 h-20 mb-6 mx-auto bg-black/30 rounded-xl transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
-              <img src={service.icon} alt={`${service.title} Icon`} class="h-12 w-12" />
+              {service.icon && (
+                <img 
+                  src={service.icon.url}
+                  alt={service.icon.alt}
+                  class="h-12 w-12"
+                />
+              )}
             </div>
             
-            <h3 class="text-2xl font-bold mb-4 text-white tracking-tight">{service.title}</h3>
+            <h3 class="text-2xl font-bold mb-4 text-white tracking-tight">{service.name}</h3>
             
             <p class="text-base text-gray-300 mb-4 leading-relaxed min-h-[4rem]">
               {service.description}
