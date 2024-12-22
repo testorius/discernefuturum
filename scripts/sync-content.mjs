@@ -146,44 +146,39 @@ function processServicesSection(content) {
   const servicesSection = extractSection(content, 'Services');
   const services = [];
   
-  // Split into individual service blocks
-  const serviceBlocks = servicesSection.split(/(?=\n## Service \d+:)/).filter(block => block.trim());
+  // Split by service entries and filter out empty ones
+  const serviceBlocks = servicesSection.split(/(?=## Service \d+:)/)
+    .filter(block => block.trim());
   
   console.log(`Found ${serviceBlocks.length} service blocks`);
   
-  serviceBlocks.forEach((block, index) => {
-    console.log(`\nProcessing service block ${index + 1}:`, block);
+  for (const block of serviceBlocks) {
+    // Extract each field with explicit regex
+    const nameMatch = block.match(/## Service \d+: (.*?)(?:\n|$)/);
+    const categoryMatch = block.match(/Category: (.*?)(?:\n|$)/);
+    const descriptionMatch = block.match(/Description: (.*?)(?:\n|$)/);
+    const imageMatch = block.match(/Image: (.*?)(?:\n|$)/);
     
-    // Extract service information using specific patterns
-    const nameMatch = block.match(/## Service \d+: (.+?)(?:\n|$)/);
-    const categoryMatch = block.match(/Category: (.+?)(?:\n|$)/);
-    const descriptionMatch = block.match(/Description: (.+?)(?:\n|$)/);
-    const imageMatch = block.match(/Image: (.+?)(?:\n|$)/);
-    
-    if (nameMatch) {
+    if (nameMatch && categoryMatch && descriptionMatch && imageMatch) {
       const service = {
         name: nameMatch[1].trim(),
-        category: categoryMatch ? categoryMatch[1].trim() : '',
-        description: descriptionMatch ? descriptionMatch[1].trim() : '',
-        icon: imageMatch ? {
+        category: categoryMatch[1].trim(),
+        description: descriptionMatch[1].trim(),
+        icon: {
           url: `/discernefuturum/images/${imageMatch[1].trim()}`,
           alt: `${nameMatch[1].trim()} icon`
-        } : null
+        }
       };
       
-      console.log('Created service object:', service);
-      
-      // Validate service has required fields
-      if (service.name && service.category && service.description && service.icon) {
-        services.push(service);
-        console.log('Service added to array');
-      } else {
-        console.log('Service skipped due to missing fields');
-      }
+      console.log('Adding service:', JSON.stringify(service, null, 2));
+      services.push(service);
+    } else {
+      console.log('Skipping incomplete service block:', block);
+      console.log('Matches:', { nameMatch, categoryMatch, descriptionMatch, imageMatch });
     }
-  });
-
-  console.log(`\nFinal services array (${services.length} items):`, JSON.stringify(services, null, 2));
+  }
+  
+  console.log(`Processed ${services.length} services:`, JSON.stringify(services, null, 2));
   return services;
 }
 
