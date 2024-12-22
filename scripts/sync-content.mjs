@@ -149,68 +149,75 @@ function processServicesSection(content) {
   const serviceBlocks = servicesSection.split(/(?=## Service \d+:)/)
     .filter(block => block.trim());
   
+  console.log(`Found ${serviceBlocks.length} service blocks`);
+  
   for (const block of serviceBlocks) {
-    const nameMatch = block.match(/## Service \d+:\s*([^\n]+)/);
+    console.log('\nProcessing block:', block);
+    
+    // Extract each field with explicit regex
+    const titleMatch = block.match(/## Service \d+:\s*([^\n]+)/);
     const categoryMatch = block.match(/Category:\s*([^\n]+)/);
     const descriptionMatch = block.match(/Description:\s*([^\n]+)/);
     const contentMatch = block.match(/Content:\s*([^\n]+)/);
     const imageMatch = block.match(/Image:\s*([^\n]+)/);
     const linkMatch = block.match(/Link:\s*([^\n]+)/);
     
-    if (nameMatch?.[1] && categoryMatch?.[1] && descriptionMatch?.[1] && imageMatch?.[1]) {
+    if (titleMatch?.[1] && categoryMatch?.[1] && descriptionMatch?.[1] && imageMatch?.[1]) {
       const service = {
-        title: nameMatch[1].trim(),
+        name: titleMatch[1].trim(),
         category: categoryMatch[1].trim(),
         description: descriptionMatch[1].trim(),
         content: contentMatch?.[1]?.trim() || '',
         icon: {
           url: `/discernefuturum/images/${imageMatch[1].trim()}`,
-          alt: `${nameMatch[1].trim()} icon`
+          alt: `${titleMatch[1].trim()} icon`
         },
         link: linkMatch?.[1]?.trim() || 'https://app.reclaim.ai/m/alexanderpaul/coffee'
       };
       
+      console.log('Created service:', JSON.stringify(service, null, 2));
       services.push(service);
+    } else {
+      console.log('Missing required fields:', {
+        title: !titleMatch,
+        category: !categoryMatch,
+        description: !descriptionMatch,
+        image: !imageMatch
+      });
     }
   }
   
+  console.log(`\nProcessed ${services.length} services:`, JSON.stringify(services, null, 2));
   return services;
 }
 
 async function processDocument(doc) {
+  console.log("Processing document content...");
+  
+  const services = processServicesSection(doc);
+  console.log(`Found ${services.length} services`);
+  
   const content = {
-    hero: {
-      uptitle: '',
-      title: '',
-      subtitle: '',
-      valueProps: [],
-      cta: {
-        primary: { text: '', link: '' },
-        secondary: { text: '', link: '' }
-      }
-    },
-    seo: {
-      title: '',
-      description: '',
-      siteName: ''
-    },
-    services: processServicesSection(doc),
-    images: {
-      profile: {
-        url: '',
-        filename: '',
-        alt: '',
-        width: 0,
-        height: 0,
-        type: ''
-      }
+    hero: processHeroSection(doc),
+    seo: processSEOSection(doc),
+    services,
+    images: processImagesSection(doc),
+    jsonLd: {
+      // ... existing jsonLd config ...
     }
   };
 
-  // Process each section
-  content.hero = processHeroSection(doc);
-  content.seo = processSEOSection(doc);
-  content.images = processImagesSection(doc);
+  // Write and verify content
+  await fs.mkdir('src/content/home', { recursive: true });
+  await fs.writeFile(
+    'src/content/home/homepage.json',
+    JSON.stringify(content, null, 2)
+  );
+
+  // Verify the written content
+  const writtenContent = await fs.readFile('src/content/home/homepage.json', 'utf8');
+  const parsed = JSON.parse(writtenContent);
+  console.log('Verification - First service:', parsed.services[0]);
 
   return content;
 }
