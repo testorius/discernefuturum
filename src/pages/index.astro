@@ -6,22 +6,22 @@ import { getEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 
 const homepage = await getEntry('home', 'homepage');
+console.log('Raw homepage data:', homepage);
+
 const { hero, seo, services } = homepage?.data || {};
 
-// Debug logging
+// More detailed debug logging
 console.log('Homepage data loaded:', {
   hasHero: !!hero,
   hasSeo: !!seo,
   servicesCount: services?.length || 0,
-  services: services // Log the actual services array
+  rawServices: services, // Log the raw services data
+  homepageKeys: homepage?.data ? Object.keys(homepage.data) : []
 });
 
-// Ensure services is always an array
-const safeServices = services || [];
-
-// Add debug logging
-console.log('Homepage data:', homepage?.data);
-console.log('Services data:', services);
+// Ensure services is always an array and log its contents
+const safeServices = Array.isArray(services) ? services : [];
+console.log('Safe services array:', safeServices);
 
 // Construct canonical URL for homepage
 const canonicalURL = new URL('/', Astro.site).toString();

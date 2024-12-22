@@ -146,13 +146,15 @@ function processServicesSection(content) {
   const servicesSection = extractSection(content, 'Services');
   const services = [];
   
-  const serviceBlocks = servicesSection.split(/(?=\n## Service \d+:)/);
+  // Split into individual service blocks
+  const serviceBlocks = servicesSection.split(/(?=\n## Service \d+:)/).filter(block => block.trim());
   
-  serviceBlocks.forEach(block => {
-    if (!block.trim()) return;
+  console.log(`Found ${serviceBlocks.length} service blocks`);
+  
+  serviceBlocks.forEach((block, index) => {
+    console.log(`\nProcessing service block ${index + 1}:`, block);
     
-    console.log('Processing service block:', block);
-    
+    // Extract service information using specific patterns
     const nameMatch = block.match(/## Service \d+: (.+?)(?:\n|$)/);
     const categoryMatch = block.match(/Category: (.+?)(?:\n|$)/);
     const descriptionMatch = block.match(/Description: (.+?)(?:\n|$)/);
@@ -254,11 +256,16 @@ async function main() {
 
     await fs.mkdir('src/content/home', { recursive: true });
     
-    // Write the content with pretty formatting for debugging
-    await fs.writeFile(
-      'src/content/home/homepage.json',
-      JSON.stringify(content, null, 2)
-    );
+    const jsonContent = JSON.stringify(content, null, 2);
+    await fs.writeFile('src/content/home/homepage.json', jsonContent);
+
+    // Verify the file was written correctly
+    const writtenContent = await fs.readFile('src/content/home/homepage.json', 'utf-8');
+    const parsedContent = JSON.parse(writtenContent);
+    console.log('Verification - Services in homepage.json:', {
+      servicesCount: parsedContent.services?.length || 0,
+      firstService: parsedContent.services?.[0]
+    });
 
     console.log('Content written to homepage.json');
     console.log('Content sync completed successfully!');
