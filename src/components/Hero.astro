@@ -27,10 +27,10 @@ const { uptitle, title, subtitle, valueProps, image } = Astro.props;
       </p>
     </div>
 
-    <!-- Two column grid with forced side-by-side layout -->
-    <div class="flex flex-col lg:flex-row gap-12 lg:gap-16">
+    <!-- Two column layout with explicit breakpoints -->
+    <div class="flex flex-col md:flex-row md:items-start md:justify-between">
       <!-- Left column - Image -->
-      <div class="w-full lg:w-1/2">
+      <div class="flex-1 md:max-w-[48%]">
         <div class="aspect-[3/2] w-full overflow-hidden rounded-xl">
           <Image
             src={image}
@@ -46,7 +46,7 @@ const { uptitle, title, subtitle, valueProps, image } = Astro.props;
       </div>
 
       <!-- Right column - Value props -->
-      <div class="w-full lg:w-1/2">
+      <div class="flex-1 md:max-w-[48%] mt-12 md:mt-0">
         <h2 class="text-2xl font-semibold text-gray-800 mb-6">
           Mein Profil für Ihren Erfolg:
         </h2>
@@ -94,3 +94,12 @@ const { uptitle, title, subtitle, valueProps, image } = Astro.props;
     </div>
   </div>
 </section>
+
+<style>
+  /* Debug styles - uncomment to see layout boundaries */
+  /*
+  .flex > div {
+    outline: 2px solid red;
+  }
+  */
+</style>
